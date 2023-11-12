@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "787595921516",
+    "project_id": "companio-diabetes-app",
+    "storage_bucket": "companio-diabetes-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:787595921516:android:003f0b3c5df8bc7412b049",
+        "android_client_info": {
+          "package_name": "com.example.companio_diabetes_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDa0zenovt_S-Lv_yD_fFzzQ2ov-RXgokc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
