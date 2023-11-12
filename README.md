@@ -1,4 +1,4 @@
-# companio_diabetes_app
+# Diabetes-Companio-App
 
 Wir planen eine Diabetes-Management-App mit dem Namen "Companio" zu implementieren.
 
