@@ -1,3 +1,4 @@
+import 'package:companio_diabetes_app/screens/resetPassword_screen.dart';
 import 'package:companio_diabetes_app/screens/signup_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -6,26 +7,33 @@ import '../utilis/colors_utilis.dart';
 import 'home_screen.dart';
 
 class SignInScreen extends StatefulWidget {
+
   const SignInScreen({super.key});
 
   @override
   State<SignInScreen> createState() => _SignInScreenState();
+
 }
 
 class _SignInScreenState extends State<SignInScreen> {
+
   final TextEditingController _passwordTextController = TextEditingController();
   final TextEditingController _emailTextController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(body: Container(
+
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
+
       decoration: BoxDecoration(
           gradient: LinearGradient(colors: [
             hexStringToColor("#3158C3"),
             hexStringToColor("#3184C3"),
             hexStringToColor("#551CB4")
           ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+
             child: SingleChildScrollView(
               child: Padding(
                 padding: EdgeInsets.fromLTRB(20, MediaQuery.of(context).size.height * 0.2, 20, 0),
@@ -44,11 +52,32 @@ class _SignInScreenState extends State<SignInScreen> {
                     const SizedBox(
                       height: 20,
                     ),
-                    reusableTextField("Enter UserName", Icons.person_outline, false, _emailTextController),
+                    reusableTextField("Gib deine E-Mail Addresse ein", Icons.person_outline, false, _emailTextController),
                     const SizedBox(
                       height: 20,
                     ),
-                    reusableTextField("Enter Password", Icons.lock_outline, true, _passwordTextController),
+                    reusableTextField("Gib dein Passwort ein", Icons.lock_outline, true, _passwordTextController),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const ResetPasswordScreen()),
+                        );
+                      },
+                      child: const Text(
+                        "Passwort vergessen?",
+                        style: TextStyle(
+                          color: Colors.white,
+                          decoration: TextDecoration.underline,
+                        ),
+
+                      ),
+
+                    ),
+
                     const SizedBox(
                       height: 20,
                     ),
@@ -56,9 +85,17 @@ class _SignInScreenState extends State<SignInScreen> {
                       FirebaseAuth.instance.signInWithEmailAndPassword(
                           email: _emailTextController.text,
                           password: _passwordTextController.text).then((value) {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const HomeScreen()));
-                      }).onError((error, stackTrace) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const HomeScreen()));
+                    }).onError((error, stackTrace) {
                         print("Error ${error.toString()}");
+
+                        // String der Fehlermeldung bei fehlerhaftem Login
+                        String errorMessage = "Ungültige E-Mail-Adresse oder Falsches Passwort.";
+
+                        showSnackBar(context, errorMessage);
                       });
                     }),
                     signUpOption(context)
@@ -90,3 +127,5 @@ Row signUpOption(BuildContext context) {
     ],
   );
 }
+
+
