@@ -14,7 +14,6 @@ class SignUpScreen extends StatefulWidget {
 class SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _passwordTextController = TextEditingController();
   final TextEditingController _emailTextController = TextEditingController();
-  final TextEditingController _userNameTextController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -29,62 +28,73 @@ class SignUpScreenState extends State<SignUpScreen> {
         ),
       ),
       body: Container(
-          width: MediaQuery
-              .of(context)
-              .size
-              .width,
-          height: MediaQuery
-              .of(context)
-              .size
-              .height,
-          decoration: BoxDecoration(
-              gradient: LinearGradient(colors: [
-                hexStringToColor("#3158C3"),
-                hexStringToColor("#3184C3"),
-                hexStringToColor("#551CB4")
-              ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
-          child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 120, 20, 0),
-                child: Column(
-                  children: <Widget>[
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    reusableTextField(
-                        "Enter UserName", Icons.person_outline, false,
-                        _userNameTextController),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    reusableTextField(
-                        "Enter Email Id", Icons.person_outline, false,
-                        _emailTextController),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    reusableTextField(
-                        "Enter Password", Icons.lock_outlined, true,
-                        _passwordTextController),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    signInSignUpButton(context, false, () {
-                      FirebaseAuth.instance
-                          .createUserWithEmailAndPassword(
-                          email: _emailTextController.text,
-                          password: _passwordTextController.text)
-                          .then((value) {
-                        print("Created New Account");
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => const HomeScreen()));
-                      }).onError((error, stackTrace) {
-                        print("Error ${error.toString()}");
-                      });
-                    })
-                  ],
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              hexStringToColor("#3158C3"),
+              hexStringToColor("#3184C3"),
+              hexStringToColor("#551CB4"),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 120, 20, 0),
+            child: Column(
+              children: <Widget>[
+                const SizedBox(
+                  height: 20,
                 ),
-              ))),
+                reusableTextField(
+                  "Gib deine E-Mail Adresse ein",
+                  Icons.account_balance_wallet_outlined,
+                  false,
+                  _emailTextController,
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                reusableTextField(
+                  "Gib dein Passwort ein",
+                  Icons.lock_outlined,
+                  true,
+                  _passwordTextController,
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                signInSignUpButton(context, false, () {
+                  if (_passwordTextController.text.length < 6) {
+                    showSnackBar(context, "Das Passwort muss mindestens 6 Zeichen haben.");
+                  } else {
+                    // Passwort hat mindestens 6 Zeichen, Registrierung fortsetzen
+                    FirebaseAuth.instance
+                        .createUserWithEmailAndPassword(
+                      email: _emailTextController.text,
+                      password: _passwordTextController.text,
+                    )
+                        .then((value) {
+                      print("Created New Account");
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const HomeScreen(),
+                        ),
+                      );
+                    }).onError((error, stackTrace) {
+                      print("Error ${error.toString()}");
+                    });
+                  }
+                }),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

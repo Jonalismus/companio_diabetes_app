@@ -65,3 +65,18 @@ Container signInSignUpButton(BuildContext context, bool isLogin, Function onTap)
     ),
   );
 }
+
+void showSnackBar(BuildContext context, String message) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Align(
+        alignment: Alignment.center,
+        child: Text(
+          message,
+          textAlign: TextAlign.center,
+        ),
+      ),
+      backgroundColor: Colors.red,
+    ),
+  );
+}
