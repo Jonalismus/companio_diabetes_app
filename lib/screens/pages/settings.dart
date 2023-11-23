@@ -12,17 +12,17 @@ class SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    Color backgroundColor = _isDarkMode ? Colors.black : Colors.white;
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Settings Page'),
-      ),
+      backgroundColor: backgroundColor,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
               'Dark Mode: ${_isDarkMode ? 'Enabled' : 'Disabled'}',
-              style: TextStyle(fontSize: 20),
+              style: TextStyle(fontSize: 20, color: _isDarkMode ? Colors.white : Colors.black),
             ),
             SizedBox(height: 20),
             Switch(

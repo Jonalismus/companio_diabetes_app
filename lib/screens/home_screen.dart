@@ -1,4 +1,5 @@
 import 'package:companio_diabetes_app/screens/pages/fooddairy.dart';
+import 'package:companio_diabetes_app/screens/pages/home.dart';
 import 'package:companio_diabetes_app/screens/pages/settings.dart';
 import 'package:companio_diabetes_app/screens/signin_screen.dart';
 import 'package:companio_diabetes_app/screens/signup_screen.dart';
@@ -13,12 +14,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class HomeScreenState extends State<HomeScreen> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
 
   final List<Widget> _pages = [
     // Add your different tab pages here
     // Example: Page1(), Page2(), Page3()
     const FoodDairyPage(),
+    const HomePage(),
     const SettingsPage()
   ];
 
@@ -37,6 +39,10 @@ class HomeScreenState extends State<HomeScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.food_bank),
             label: 'Food Dairy',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),

@@ -99,9 +99,6 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Food Dairy'),
-      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showDialog(
