@@ -44,37 +44,38 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyA5CpVyQ5hL85hZYxlIg_Z_IFaLzINHP8k',
-    appId: '1:452014556538:web:426325f25d625d83d0c2c3',
-    messagingSenderId: '452014556538',
-    projectId: 'diabetes-companio',
-    authDomain: 'diabetes-companio.firebaseapp.com',
-    storageBucket: 'diabetes-companio.appspot.com',
+    apiKey: 'AIzaSyCnabCHW2i7xzz8uhhvGTgQXT6_55tt3sw',
+    appId: '1:787595921516:web:660241566c261d4812b049',
+    messagingSenderId: '787595921516',
+    projectId: 'companio-diabetes-app',
+    authDomain: 'companio-diabetes-app.firebaseapp.com',
+    storageBucket: 'companio-diabetes-app.appspot.com',
+    measurementId: 'G-NKTDZ3EVXN',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDUYWTybnRIPV3XwpA219lu7dTrBV5txdw',
-    appId: '1:452014556538:android:60d782a48db6b057d0c2c3',
-    messagingSenderId: '452014556538',
-    projectId: 'diabetes-companio',
-    storageBucket: 'diabetes-companio.appspot.com',
+    apiKey: 'AIzaSyDa0zenovt_S-Lv_yD_fFzzQ2ov-RXgokc',
+    appId: '1:787595921516:android:003f0b3c5df8bc7412b049',
+    messagingSenderId: '787595921516',
+    projectId: 'companio-diabetes-app',
+    storageBucket: 'companio-diabetes-app.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyD7bb7LSBpgnF2BP3cyPTp4D1xWn9YQQL4',
-    appId: '1:452014556538:ios:f5e9f685e07b2dd6d0c2c3',
-    messagingSenderId: '452014556538',
-    projectId: 'diabetes-companio',
-    storageBucket: 'diabetes-companio.appspot.com',
-    iosBundleId: 'com.example.diabetesCompanio',
+    apiKey: 'AIzaSyABuyz42O5By60f3l7u1PoKWJQCec0vTdU',
+    appId: '1:787595921516:ios:272048d05db4d77412b049',
+    messagingSenderId: '787595921516',
+    projectId: 'companio-diabetes-app',
+    storageBucket: 'companio-diabetes-app.appspot.com',
+    iosBundleId: 'com.example.companioDiabetesApp',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyD7bb7LSBpgnF2BP3cyPTp4D1xWn9YQQL4',
-    appId: '1:452014556538:ios:dc7c8e86a0f5826ad0c2c3',
-    messagingSenderId: '452014556538',
-    projectId: 'diabetes-companio',
-    storageBucket: 'diabetes-companio.appspot.com',
-    iosBundleId: 'com.example.diabetesCompanio.RunnerTests',
+    apiKey: 'AIzaSyABuyz42O5By60f3l7u1PoKWJQCec0vTdU',
+    appId: '1:787595921516:ios:cb38fbe636bc9f4112b049',
+    messagingSenderId: '787595921516',
+    projectId: 'companio-diabetes-app',
+    storageBucket: 'companio-diabetes-app.appspot.com',
+    iosBundleId: 'com.example.companioDiabetesApp.RunnerTests',
   );
 }
