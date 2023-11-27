@@ -1,3 +1,4 @@
+import 'package:companio_diabetes_app/api/notification_api.dart';
 import 'package:companio_diabetes_app/screens/pages/fooddairy.dart';
 import 'package:companio_diabetes_app/screens/pages/home.dart';
 import 'package:companio_diabetes_app/screens/pages/notfallplan.dart';
@@ -105,6 +106,22 @@ class HomeScreenState extends State<HomeScreen> {
                 );
               },
               child: Text('Ernährungstagebuch'),
+              style: ElevatedButton.styleFrom(
+                primary: Colors.deepPurple,
+                onPrimary: Colors.white,
+              ),
+            ),
+          ),
+          SizedBox(height: 8),
+          Center(
+            child: ElevatedButton(
+              onPressed: ()
+                => NotificationApi.showNotification(
+                  title: "sarah",
+                  body: "loloololo",
+                    payload: "sarah",
+                ),
+              child: Text('Medikamenten-Erinnerung'),
               style: ElevatedButton.styleFrom(
                 primary: Colors.deepPurple,
                 onPrimary: Colors.white,

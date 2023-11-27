@@ -2,6 +2,7 @@ import 'package:companio_diabetes_app/firebase_options.dart';
 import 'package:companio_diabetes_app/screens/signin_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 
 
@@ -13,6 +14,7 @@ void main() async {
   );
   runApp(const MainApp());
 }
+
 
 class MainApp extends StatelessWidget {
   const MainApp({Key? key}) : super(key: key);
@@ -28,3 +30,4 @@ class MainApp extends StatelessWidget {
     );
   }
 }
+
