@@ -38,7 +38,6 @@ class HomeScreenState extends State<HomeScreen> {
           IconButton(
             icon: Icon(Icons.logout),
             onPressed: () {
-              // Implement logout functionality here.
             },
           ),
         ],
