@@ -7,9 +7,9 @@ class NotfallplanPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Notfallplan'),
+        title: const Text('Notfallplan'),
       ),
-      body: Center(
+      body: const Center(
         child: Text(
           'Hier ist dein Notfallplan!',
           style: TextStyle(fontSize: 20),

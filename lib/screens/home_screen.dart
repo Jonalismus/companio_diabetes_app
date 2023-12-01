@@ -3,9 +3,6 @@ import 'package:companio_diabetes_app/screens/pages/fooddairy.dart';
 import 'package:companio_diabetes_app/screens/pages/home.dart';
 import 'package:companio_diabetes_app/screens/pages/notfallplan.dart';
 import 'package:companio_diabetes_app/screens/pages/settings.dart';
-import 'package:companio_diabetes_app/screens/signin_screen.dart';
-import 'package:companio_diabetes_app/screens/signup_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -17,6 +14,7 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 1;
+
 
   final List<Widget> _pages = [
     const NotfallplanPage(),
@@ -34,10 +32,10 @@ class HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Companio'),
+        title: const Text('Companio'),
         actions: [
           IconButton(
-            icon: Icon(Icons.logout),
+            icon: const Icon(Icons.logout),
             onPressed: () {
               // Implement logout functionality here.
             },
@@ -70,62 +68,55 @@ class HomeScreenState extends State<HomeScreen> {
           : Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Center(
             child: ElevatedButton(
               onPressed: () {
                 // Implementiere die Funktionalität für Blutzuckermessung hier.
               },
-              child: Text('Blutzuckermessung'),
               style: ElevatedButton.styleFrom(
-                primary: Colors.deepPurple,
-                onPrimary: Colors.white,
+                foregroundColor: Colors.white, backgroundColor: Colors.deepPurple,
               ),
+              child: const Text('Blutzuckermessung'),
             ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Center(
             child: ElevatedButton(
               onPressed: () {
                 // Implementiere die Funktionalität für Insulinrechner hier.
               },
-              child: Text('Insulinrechner'),
               style: ElevatedButton.styleFrom(
-                primary: Colors.deepPurple,
-                onPrimary: Colors.white,
+                foregroundColor: Colors.white, backgroundColor: Colors.deepPurple,
               ),
+              child: const Text('Insulinrechner'),
             ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Center(
             child: ElevatedButton(
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => FoodDairyPage()),
+                  MaterialPageRoute(builder: (context) => const FoodDairyPage()),
                 );
               },
-              child: Text('Ernährungstagebuch'),
               style: ElevatedButton.styleFrom(
-                primary: Colors.deepPurple,
-                onPrimary: Colors.white,
+                foregroundColor: Colors.white, backgroundColor: Colors.deepPurple,
               ),
+              child: const Text('Ernährungstagebuch'),
             ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Center(
             child: ElevatedButton(
-              onPressed: ()
-                => NotificationApi.showNotification(
-                  title: "sarah",
-                  body: "loloololo",
-                    payload: "sarah",
-                ),
-              child: Text('Medikamenten-Erinnerung'),
+              onPressed: () {
+                NotificationApi().showNotification(title: "lol", body: "lol");
+              },
               style: ElevatedButton.styleFrom(
-                primary: Colors.deepPurple,
-                onPrimary: Colors.white,
+                foregroundColor: Colors.white, backgroundColor: Colors.deepPurple,
               ),
+              child: const Text('Medikamenten-Erinnerung'),
             ),
           ),
         ],
