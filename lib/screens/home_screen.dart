@@ -2,9 +2,6 @@ import 'package:companio_diabetes_app/screens/pages/fooddairy.dart';
 import 'package:companio_diabetes_app/screens/pages/home.dart';
 import 'package:companio_diabetes_app/screens/pages/notfallplan.dart';
 import 'package:companio_diabetes_app/screens/pages/settings.dart';
-import 'package:companio_diabetes_app/screens/signin_screen.dart';
-import 'package:companio_diabetes_app/screens/signup_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
