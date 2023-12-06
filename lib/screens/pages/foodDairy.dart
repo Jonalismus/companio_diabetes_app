@@ -113,26 +113,61 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
           pickedTime.minute,
         );
       });
+      setState(() {
+
+      });
     } else if (pickedTime != null) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text("Invalid Time"),
-            content: const Text(
-                "You cannot select a time later than the current time."),
-            actions: <Widget>[
-              TextButton(
-                child: const Text("OK"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        },
-      );
+      _showWarningDialog("Invalid Time",
+          "You cannot select a time later than the current time.");
     }
+  }
+
+  void _showWarningDialog(String title, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showConfirmationDialog(VoidCallback onConfirm, String title,
+      String content, String button1, String button2) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(content),
+          actions: <Widget>[
+            TextButton(
+              child: Text(button1),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text(button2),
+              onPressed: () {
+                onConfirm();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _toggleAddFoodItem() {
@@ -155,6 +190,12 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
   }
 
   void _submitEntry() async {
+    if (_foodItems.isEmpty) {
+      _showWarningDialog(
+          'Error', 'Cannot add a meal entry with no food items.');
+      return;
+    }
+
     // Print each food item
     for (FoodItem foodItem in _foodItems) {
       print('Food Name: ${foodItem.name}, Quantity: ${foodItem.quantity}');
@@ -201,6 +242,17 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
   }
 
   void _addFoodItem() {
+    if (_foodNameController.text.isEmpty) {
+      _showWarningDialog('Error', 'Please enter a food name.');
+      return;
+    }
+
+    int? quantity = int.tryParse(_foodQuantityController.text);
+    if (quantity == null || quantity <= 0) {
+      _showWarningDialog('Error', 'Please enter a valid quantity.');
+      return;
+    }
+
     _foodItems.add(
       FoodItem(
         name: _foodNameController.text,
@@ -284,10 +336,19 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
                     IconButton(
                       icon: const Icon(Icons.delete),
                       onPressed: () {
-                        setState(() {
-                          mealEntry.foodItems.remove(item);
-                          UserDao.updateMealLog(FirebaseAuth.instance.currentUser!.uid, mealEntry.uuid, mealEntry);
-                        });
+                        _showConfirmationDialog(() {
+                          setState(() {
+                            mealEntry.foodItems.remove(item);
+                            UserDao.updateMealLog(
+                                FirebaseAuth.instance.currentUser!.uid,
+                                mealEntry.uuid,
+                                mealEntry);
+                          });
+                        },
+                            "Delete Food Item",
+                            "Are you sure you want to delete this food item?",
+                            "Cancel",
+                            "Delete");
                       },
                     ),
                   ],
@@ -317,7 +378,10 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
                   setState(() {
                     _addFoodItemToMealEntry(mealEntry);
                     _toggleAddFoodItem();
-                    UserDao.updateMealLog(FirebaseAuth.instance.currentUser!.uid, mealEntry.uuid, mealEntry);
+                    UserDao.updateMealLog(
+                        FirebaseAuth.instance.currentUser!.uid,
+                        mealEntry.uuid,
+                        mealEntry);
                   });
                 },
               ),
@@ -333,11 +397,17 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
             IconButton(
               icon: const Icon(Icons.delete),
               onPressed: () {
-                setState(() {
-                  _mealEntries.remove(mealEntry);
-                  UserDao.deleteMealLog(
-                      FirebaseAuth.instance.currentUser!.uid, mealEntry.uuid);
-                });
+                _showConfirmationDialog(() {
+                  setState(() {
+                    _mealEntries.remove(mealEntry);
+                    UserDao.deleteMealLog(
+                        FirebaseAuth.instance.currentUser!.uid, mealEntry.uuid);
+                  });
+                },
+                    "Delete Meal Entry",
+                    "Are you sure you want to delete this meal entry?",
+                    "Cancel",
+                    "Delete");
               },
             ),
           ],
@@ -351,7 +421,9 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
     DataProvider dataProvider =
         Provider.of<DataProvider>(context, listen: true);
     if (!dataProvider.isLoaded) {
-      return const CircularProgressIndicator();
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
     }
     _mealEntries = dataProvider.mealEntries;
 
@@ -372,7 +444,7 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
               return StatefulBuilder(
                 builder: (context, setState) {
                   return AlertDialog(
-                    title: const Text('Log meal'),
+                    title: const Text('Add Meal Log'),
                     content: SingleChildScrollView(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
