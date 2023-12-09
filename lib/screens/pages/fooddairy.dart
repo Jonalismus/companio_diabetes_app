@@ -31,7 +31,7 @@ class FoodItem {
     return FoodItem(
       name: map['name'],
       quantity: map['quantity'],
-      carbohydrate_100g: map['carbohydrate'],
+      carbohydrate_100g: map['carbohydrate_100g'],
     );
   }
 }
@@ -62,14 +62,13 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
   final TextEditingController _foodQuantityController = TextEditingController();
   final TextEditingController _foodCarbsController = TextEditingController();
   final TextEditingController _barcodeController = TextEditingController();
+  String? _editingMealEntryUuid;
 
   final List<FoodItem> _foodItems = [];
 
   bool _isAddingFoodItem = false;
   List<MealEntry> _mealEntries = [];
   DateTime _selectedDateTime = DateTime.now();
-
-  Icon _iconInUse = const Icon(Icons.add);
 
   void fetchAndFillProductData(String barcode) async {
     var url = Uri.parse(
@@ -275,17 +274,18 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
     );
   }
 
-  void _toggleAddFoodItem() {
+  void _toggleAddFoodItem(String mealEntryUuid) {
     setState(() {
-      _isAddingFoodItem = !_isAddingFoodItem;
-      if (!_isAddingFoodItem) {
-        _foodNameController.clear();
-        _foodQuantityController.clear();
-        _foodCarbsController.clear();
+      if (_isAddingFoodItem && _editingMealEntryUuid == mealEntryUuid) {
+        _isAddingFoodItem = false;
+        _editingMealEntryUuid = null;
+      } else {
+        _isAddingFoodItem = true;
+        _editingMealEntryUuid = mealEntryUuid;
       }
-      _iconInUse = (_iconInUse.icon == Icons.add)
-          ? const Icon(Icons.cancel)
-          : const Icon(Icons.add);
+      _foodNameController.clear();
+      _foodQuantityController.clear();
+      _foodCarbsController.clear();
     });
   }
 
@@ -421,6 +421,8 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
   }
 
   Widget _buildMealEntry(MealEntry mealEntry) {
+    bool isEditingThisEntry = _editingMealEntryUuid == mealEntry.uuid;
+    Icon actionIcon = isEditingThisEntry ? const Icon(Icons.cancel) : const Icon(Icons.add);
     return ExpansionTile(
       title: Text('Meal at ${DateFormat('HH:mm').format(mealEntry.dateTime)}'),
       children: [
@@ -438,7 +440,8 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
                       flex: 2,
                       child: TextFormField(
                         controller: TextEditingController(
-                            text: '${item.carbohydrate_100g.toStringAsFixed(2)} g/100g(ml)'),
+                            text:
+                                '${item.carbohydrate_100g.toStringAsFixed(2)} g/100g(ml)'),
                         readOnly: true,
                       ),
                     ),
@@ -471,7 +474,7 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
                   ],
                 ))
             .toList(),
-        if (_isAddingFoodItem)
+        if (_isAddingFoodItem && isEditingThisEntry)
           Row(
             children: [
               Expanded(
@@ -503,14 +506,13 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
                   icon: const Icon(Icons.scanner),
                   onPressed: () {
                     _showBarcodeInputDialog();
-                  }
-              ),
+                  }),
               IconButton(
                 icon: const Icon(Icons.save),
                 onPressed: () {
                   setState(() {
                     _addFoodItemToMealEntry(mealEntry);
-                    _toggleAddFoodItem();
+                    _toggleAddFoodItem(mealEntry.uuid);
                     UserDao.updateMealLog(
                         FirebaseAuth.instance.currentUser!.uid,
                         mealEntry.uuid,
@@ -524,8 +526,8 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             IconButton(
-              icon: _iconInUse,
-              onPressed: () => _toggleAddFoodItem(),
+              icon: actionIcon,
+              onPressed: () => _toggleAddFoodItem(mealEntry.uuid),
             ),
             IconButton(
               icon: const Icon(Icons.delete),
@@ -551,7 +553,8 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
 
   @override
   Widget build(BuildContext context) {
-    DataProvider dataProvider = Provider.of<DataProvider>(context, listen: true);
+    DataProvider dataProvider =
+        Provider.of<DataProvider>(context, listen: true);
     if (!dataProvider.isLoaded) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -560,13 +563,11 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
     return Scaffold(
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(height: 20.0),
-              _buildTable(),
-            ]
-        ),
+        child:
+            Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          const SizedBox(height: 20.0),
+          _buildTable(),
+        ]),
       ),
       floatingActionButton: _buildFloatingActionButton(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -644,26 +645,27 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
           ),
           const SizedBox(height: 20.0),
           ..._foodItems.map((foodItem) => Row(
-            children: [
-              Expanded(
-                child: Text('${foodItem.name}: ${foodItem.quantity}'),
-              ),
-              IconButton(
-                onPressed: () {
-                  setState(() {
-                    _foodItems.remove(foodItem);
-                  });
-                },
-                icon: const Icon(Icons.delete),
-              ),
-            ],
-          )),
+                children: [
+                  Expanded(
+                    child: Text('${foodItem.name}: ${foodItem.quantity}'),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _foodItems.remove(foodItem);
+                      });
+                    },
+                    icon: const Icon(Icons.delete),
+                  ),
+                ],
+              )),
           const SizedBox(height: 20.0),
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               const Tooltip(
-                message: 'Click to enter or scan a barcode. If the food has no barcode, please visit https://fddb.info/ for its info.',
+                message:
+                    'Click to enter or scan a barcode. If the food has no barcode, please visit https://fddb.info/ for its info.',
                 child: Text('Barcode'),
               ),
               IconButton(
@@ -678,12 +680,14 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
           ),
           TextFormField(
             controller: _foodCarbsController,
-            decoration: const InputDecoration(labelText: 'Carbohydrates per 100g(ml)'),
+            decoration:
+                const InputDecoration(labelText: 'Carbohydrates per 100g(ml)'),
             keyboardType: TextInputType.number,
           ),
           TextFormField(
             controller: _foodQuantityController,
-            decoration: const InputDecoration(labelText: 'Quantity (unit: g or ml)'),
+            decoration:
+                const InputDecoration(labelText: 'Quantity (unit: g or ml)'),
             keyboardType: TextInputType.number,
           ),
           IconButton(
