@@ -17,7 +17,7 @@ class HomeScreenState extends State<HomeScreen> {
   final List<Widget> _pages = [
     const NotfallplanPage(),
     const HomePage(),
-    const SettingsPage(),
+    const FoodDairyPage(),
   ];
 
   void _onItemTapped(int index) {
@@ -52,8 +52,8 @@ class HomeScreenState extends State<HomeScreen> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Einstellungen',
+            icon: Icon(Icons.food_bank),
+            label: 'Ernährungstagebuch',
           ),
         ],
         currentIndex: _selectedIndex,
@@ -90,23 +90,7 @@ class HomeScreenState extends State<HomeScreen> {
                 onPrimary: Colors.white,
               ),
             ),
-          ),
-          SizedBox(height: 8),
-          Center(
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => FoodDairyPage()),
-                );
-              },
-              child: Text('Ernährungstagebuch'),
-              style: ElevatedButton.styleFrom(
-                primary: Colors.deepPurple,
-                onPrimary: Colors.white,
-              ),
-            ),
-          ),
+          )
         ],
       ),
     );
