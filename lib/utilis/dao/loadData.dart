@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'firestore.dart';
-import '../../screens/pages/foodDairy.dart';
+import '../../screens/pages/fooddairy.dart';
 
 class DataProvider with ChangeNotifier {
   late List<MealEntry> _mealEntries;
