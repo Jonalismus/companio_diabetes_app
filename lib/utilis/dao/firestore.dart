@@ -151,11 +151,11 @@ class UserDao {
           .map((item) => {
                 'name': item.name,
                 'quantity': item.quantity,
-                'carbohydrate': item.carbohydrate
+                'carbohydrate_100g': item.carbohydrate_100g
               })
           .toList(),
-      'carbohydrate_content': mealEntry.foodItems
-          .fold(0, (total, item) => total + item.carbohydrate),
+      'carbohydrate_sum': mealEntry.foodItems
+          .fold(0.0, (total, item) => total + item.carbohydrate_100g * item.quantity / 100),
       'date_time': Timestamp.fromDate(mealEntry.dateTime),
     };
 
@@ -222,11 +222,11 @@ class UserDao {
           .map((item) => {
         'name': item.name,
         'quantity': item.quantity,
-        'carbohydrate': item.carbohydrate
+        'carbohydrate_100g': item.carbohydrate_100g
       })
           .toList(),
-      'carbohydrate_content': MealEntry.foodItems
-          .fold(0, (total, item) => total + item.carbohydrate),
+      'carbohydrate_sum': MealEntry.foodItems
+          .fold(0.0, (total, item) => total + item.carbohydrate_100g * item.quantity / 100),
       'date_time': MealEntry.dateTime,
     };
 

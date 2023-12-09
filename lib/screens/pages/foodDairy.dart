@@ -6,6 +6,9 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import '../../utilis/dao/firestore.dart';
+import 'dart:convert';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:http/http.dart' as http;
 
 class FoodDairyPage extends StatefulWidget {
   const FoodDairyPage({Key? key}) : super(key: key);
@@ -16,17 +19,19 @@ class FoodDairyPage extends StatefulWidget {
 
 class FoodItem {
   String name;
-  int quantity;
-  int carbohydrate; //TODO
+  double quantity;
+  double carbohydrate_100g; //TODO
 
   FoodItem(
-      {required this.name, required this.quantity, required this.carbohydrate});
+      {required this.name,
+      required this.quantity,
+      required this.carbohydrate_100g});
 
   factory FoodItem.fromMap(Map<String, dynamic> map) {
     return FoodItem(
       name: map['name'],
       quantity: map['quantity'],
-      carbohydrate: map['carbohydrate'],
+      carbohydrate_100g: map['carbohydrate'],
     );
   }
 }
@@ -55,13 +60,115 @@ class MealEntry {
 class _FoodDairyPageState extends State<FoodDairyPage> {
   final TextEditingController _foodNameController = TextEditingController();
   final TextEditingController _foodQuantityController = TextEditingController();
+  final TextEditingController _foodCarbsController = TextEditingController();
+  final TextEditingController _barcodeController = TextEditingController();
+
   final List<FoodItem> _foodItems = [];
 
   bool _isAddingFoodItem = false;
-
   List<MealEntry> _mealEntries = [];
   DateTime _selectedDateTime = DateTime.now();
+
   Icon _iconInUse = const Icon(Icons.add);
+
+  void fetchAndFillProductData(String barcode) async {
+    var url = Uri.parse(
+        'https://world.openfoodfacts.org/api/v2/product/$barcode?fields=product_name,carbohydrates_100g');
+    var response = await http.get(url, headers: {'accept': 'application/json'});
+
+    if (response.statusCode == 200) {
+      var jsonData = jsonDecode(response.body);
+      if (jsonData['product'] != null) {
+        var productData = jsonData['product'];
+        setState(() {
+          _foodNameController.text = productData['product_name'] ?? '';
+          double carbs = productData['carbohydrates_100g'] ?? 0.0;
+          _foodCarbsController.text = carbs.toString();
+        });
+      } else {
+        _barcodeController.clear();
+      }
+    }
+  }
+
+  Future<String> scanBarcode() async {
+    String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
+      '#ff6666',
+      'Cancel',
+      true,
+      ScanMode.BARCODE,
+    );
+
+    if (!mounted) return '';
+
+    if (barcodeScanRes == '-1') {
+      return '';
+    } else {
+      return barcodeScanRes;
+    }
+  }
+
+  void _showBarcodeInputDialog() {
+    TextEditingController barcodeInputDialogController =
+        TextEditingController();
+    barcodeInputDialogController.text = _barcodeController.text;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Barcode Input'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              ElevatedButton(
+                onPressed: () async {
+                  // Navigator.of(context).pop();
+                  String scannedBarcode = await scanBarcode();
+                  setState(() {
+                    _barcodeController.text = scannedBarcode;
+                    barcodeInputDialogController.text = _barcodeController.text;
+                  });
+                },
+                child: const Text('Scan Barcode'),
+              ),
+              TextField(
+                controller: barcodeInputDialogController,
+                decoration: const InputDecoration(labelText: 'Enter Barcode'),
+                keyboardType: TextInputType.number,
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.pink,
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.blue,
+              ),
+              onPressed: () {
+                setState(() {
+                  _barcodeController.text = barcodeInputDialogController.text;
+                  fetchAndFillProductData(_barcodeController.text);
+                });
+                Navigator.of(context).pop();
+              },
+              child: const Text('Confirm'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   Future<void> _pickDate() async {
     DateTime? pickedDate = await showDatePicker(
@@ -113,9 +220,7 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
           pickedTime.minute,
         );
       });
-      setState(() {
-
-      });
+      setState(() {});
     } else if (pickedTime != null) {
       _showWarningDialog("Invalid Time",
           "You cannot select a time later than the current time.");
@@ -176,6 +281,7 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
       if (!_isAddingFoodItem) {
         _foodNameController.clear();
         _foodQuantityController.clear();
+        _foodCarbsController.clear();
       }
       _iconInUse = (_iconInUse.icon == Icons.add)
           ? const Icon(Icons.cancel)
@@ -214,6 +320,7 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
     // Clear input fields and food items list
     _foodNameController.clear();
     _foodQuantityController.clear();
+    _foodCarbsController.clear();
     _foodItems.clear();
 
     // Close dialog
@@ -232,6 +339,7 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
     // Clear input fields and food items list
     _foodNameController.clear();
     _foodQuantityController.clear();
+    _foodCarbsController.clear();
     _foodItems.clear();
 
     // Close the dialog
@@ -256,13 +364,14 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
     _foodItems.add(
       FoodItem(
         name: _foodNameController.text,
-        quantity: int.parse(_foodQuantityController.text),
-        carbohydrate: 0, //TODO
+        quantity: double.parse(_foodQuantityController.text),
+        carbohydrate_100g: double.parse(_foodCarbsController.text),
       ),
     );
 
     _foodNameController.clear();
     _foodQuantityController.clear();
+    _foodCarbsController.clear();
   }
 
   Widget _buildTable() {
@@ -329,7 +438,15 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
                       flex: 2,
                       child: TextFormField(
                         controller: TextEditingController(
-                            text: item.quantity.toString()),
+                            text: '${item.carbohydrate_100g.toStringAsFixed(2)} g/100g(ml)'),
+                        readOnly: true,
+                      ),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: TextFormField(
+                        controller: TextEditingController(
+                            text: '${item.quantity.toString()} g(ml)'),
                         readOnly: true,
                       ),
                     ),
@@ -367,10 +484,26 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
               Expanded(
                 flex: 2,
                 child: TextFormField(
-                  controller: _foodQuantityController,
-                  decoration: const InputDecoration(labelText: 'Food Quantity'),
+                  controller: _foodCarbsController,
+                  decoration: const InputDecoration(
+                      labelText: 'Carbohydrates per 100g(ml)'),
                   keyboardType: TextInputType.number,
                 ),
+              ),
+              Expanded(
+                flex: 2,
+                child: TextFormField(
+                  controller: _foodQuantityController,
+                  decoration: const InputDecoration(
+                      labelText: 'Quantity (unit: g or ml)'),
+                  keyboardType: TextInputType.number,
+                ),
+              ),
+              IconButton(
+                  icon: const Icon(Icons.scanner),
+                  onPressed: () {
+                    _showBarcodeInputDialog();
+                  }
               ),
               IconButton(
                 icon: const Icon(Icons.save),
@@ -418,135 +551,147 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
 
   @override
   Widget build(BuildContext context) {
-    DataProvider dataProvider =
-        Provider.of<DataProvider>(context, listen: true);
+    DataProvider dataProvider = Provider.of<DataProvider>(context, listen: true);
     if (!dataProvider.isLoaded) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return const Center(child: CircularProgressIndicator());
     }
     _mealEntries = dataProvider.mealEntries;
 
     return Scaffold(
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
-        child:
-            Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          const SizedBox(height: 20.0),
-          _buildTable(),
-        ]),
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const SizedBox(height: 20.0),
+              _buildTable(),
+            ]
+        ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return StatefulBuilder(
-                builder: (context, setState) {
-                  return AlertDialog(
-                    title: const Text('Add Meal Log'),
-                    content: SingleChildScrollView(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: ElevatedButton(
-                                  onPressed: _pickDate,
-                                  style: ElevatedButton.styleFrom(
-                                    foregroundColor: Colors.white,
-                                    backgroundColor: Colors.blue,
-                                  ),
-                                  child: Text(DateFormat('yyyy-MM-dd')
-                                      .format(_selectedDateTime)),
-                                ),
-                              ),
-                              Expanded(
-                                child: ElevatedButton(
-                                  onPressed: _pickTime,
-                                  style: ElevatedButton.styleFrom(
-                                    foregroundColor: Colors.white,
-                                    backgroundColor: Colors.blue,
-                                  ),
-                                  child: Text(DateFormat('HH:mm')
-                                      .format(_selectedDateTime)),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 20.0),
-                          for (var foodItem in _foodItems)
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                      '${foodItem.name}: ${foodItem.quantity}'),
-                                ),
-                                IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      _foodItems.remove(foodItem);
-                                    });
-                                  },
-                                  icon: const Icon(Icons.delete),
-                                ),
-                              ],
-                            ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: TextFormField(
-                                  controller: _foodNameController,
-                                  decoration: const InputDecoration(
-                                      labelText: 'Food Name'),
-                                ),
-                              ),
-                              const SizedBox(width: 16.0),
-                              Expanded(
-                                child: TextFormField(
-                                  controller: _foodQuantityController,
-                                  decoration: const InputDecoration(
-                                      labelText: 'Food Quantity'),
-                                  keyboardType: TextInputType.number,
-                                ),
-                              ),
-                              IconButton(
-                                onPressed: () => setState(_addFoodItem),
-                                icon: const Icon(Icons.add),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    actions: [
-                      ElevatedButton(
-                        onPressed: _cancelSubmitEntry,
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          backgroundColor: Colors.pink,
-                        ),
-                        child: const Text('Cancel'),
-                      ),
-                      ElevatedButton(
-                        onPressed: _submitEntry,
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          backgroundColor: Colors.blue,
-                        ),
-                        child: const Text('Submit'),
-                      ),
-                    ],
-                  );
-                },
-              );
-            },
-          );
-        },
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: _buildFloatingActionButton(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+    );
+  }
+
+  Widget _buildFloatingActionButton() {
+    return FloatingActionButton(
+      onPressed: () {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return StatefulBuilder(
+              builder: (context, setState) {
+                return AlertDialog(
+                  title: const Text('Add Meal Log'),
+                  content: _buildAddMealLogDialogContent(setState),
+                  actions: _buildAddMealLogDialogActions(),
+                );
+              },
+            );
+          },
+        );
+      },
+      child: const Icon(Icons.add),
+    );
+  }
+
+  List<Widget> _buildAddMealLogDialogActions() {
+    return [
+      ElevatedButton(
+        onPressed: _cancelSubmitEntry,
+        style: ElevatedButton.styleFrom(
+          foregroundColor: Colors.white,
+          backgroundColor: Colors.pink,
+        ),
+        child: const Text('Cancel'),
+      ),
+      ElevatedButton(
+        onPressed: _submitEntry,
+        style: ElevatedButton.styleFrom(
+          foregroundColor: Colors.white,
+          backgroundColor: Colors.blue,
+        ),
+        child: const Text('Submit'),
+      ),
+    ];
+  }
+
+  Widget _buildAddMealLogDialogContent(Function setState) {
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ElevatedButton(
+                onPressed: _pickDate,
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.blue,
+                ),
+                child: Text(DateFormat('yyyy-MM-dd').format(_selectedDateTime)),
+              ),
+              ElevatedButton(
+                onPressed: _pickTime,
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.blue,
+                ),
+                child: Text(DateFormat('HH:mm').format(_selectedDateTime)),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20.0),
+          ..._foodItems.map((foodItem) => Row(
+            children: [
+              Expanded(
+                child: Text('${foodItem.name}: ${foodItem.quantity}'),
+              ),
+              IconButton(
+                onPressed: () {
+                  setState(() {
+                    _foodItems.remove(foodItem);
+                  });
+                },
+                icon: const Icon(Icons.delete),
+              ),
+            ],
+          )),
+          const SizedBox(height: 20.0),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Tooltip(
+                message: 'Click to enter or scan a barcode. If the food has no barcode, please visit https://fddb.info/ for its info.',
+                child: Text('Barcode'),
+              ),
+              IconButton(
+                icon: const Icon(Icons.scanner),
+                onPressed: _showBarcodeInputDialog,
+              ),
+            ],
+          ),
+          TextFormField(
+            controller: _foodNameController,
+            decoration: const InputDecoration(labelText: 'Food Name'),
+          ),
+          TextFormField(
+            controller: _foodCarbsController,
+            decoration: const InputDecoration(labelText: 'Carbohydrates per 100g(ml)'),
+            keyboardType: TextInputType.number,
+          ),
+          TextFormField(
+            controller: _foodQuantityController,
+            decoration: const InputDecoration(labelText: 'Quantity (unit: g or ml)'),
+            keyboardType: TextInputType.number,
+          ),
+          IconButton(
+            onPressed: () => setState(_addFoodItem),
+            icon: const Icon(Icons.add),
+          ),
+        ],
+      ),
     );
   }
 }
