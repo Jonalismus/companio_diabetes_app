@@ -21,9 +21,6 @@ class _NotificationSettings extends State<NotificationSettings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Medikamenten-Erinnerung"),
-      ),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -36,25 +33,41 @@ class _NotificationSettings extends State<NotificationSettings> {
             end: Alignment.bottomCenter,
           ),
         ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (!isNotificationScheduled) DatePickerTxt(
-                onDateTimeSelected: () {
-                  setState(() {
-                    isTimeSelected = true;
-                  });
-                },
+        child: Column(
+          children: [
+            AppBar(
+              title: Text("Medikamenten-Erinnerung"),
+            ),
+            // Logo hinzufügen
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Image.asset('assets/images/rememberLogo.png', height: 300, width: 300), // Passe die Größe an
+            ),
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (!isNotificationScheduled)
+                    DatePickerTxt(
+                      onDateTimeSelected: () {
+                        setState(() {
+                          isTimeSelected = true;
+                        });
+                      },
+                    ),
+                  if (isTimeSelected && !isNotificationScheduled)
+                    ScheduleBtn(onScheduled: () {
+                      setState(() {
+                        isNotificationScheduled = true;
+                      });
+                    }),
+                  if (isNotificationScheduled)
+                    Text('Ihre Erinnerung wurde festgelegt',
+                        style: TextStyle(color: Colors.white, fontSize: 20.0)),
+                ],
               ),
-              if (isTimeSelected && !isNotificationScheduled) ScheduleBtn(onScheduled: () {
-                setState(() {
-                  isNotificationScheduled = true;
-                });
-              }),
-              if (isNotificationScheduled) Text('Ihre Erinnerung wurde festgelegt', style: TextStyle(color: Colors.white, fontSize: 20.0)),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -122,8 +135,8 @@ class ScheduleBtn extends StatelessWidget {
       onPressed: () {
         debugPrint('Notification Scheduled for $scheduleTime');
         NotificationService().scheduleNotification(
-          title: 'Scheduled Notification',
-          body: '$scheduleTime',
+          title: 'Medikamenten einnahme',
+          body: 'Es ist Zeit, ihre Medikamente einzunehmen!',
           scheduledNotificationDateTime: scheduleTime,
         );
         onScheduled();
