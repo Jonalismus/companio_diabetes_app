@@ -6,7 +6,6 @@ import 'Services/notifi_service.dart';
 DateTime scheduleTime = DateTime.now();
 
 class NotificationSettings extends StatefulWidget {
-
   const NotificationSettings({Key? key, required this.title}) : super(key: key);
 
   final String title;
@@ -16,19 +15,46 @@ class NotificationSettings extends StatefulWidget {
 }
 
 class _NotificationSettings extends State<NotificationSettings> {
+  bool isTimeSelected = false;
+  bool isNotificationScheduled = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text("Medikamenten-Erinnerung"),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            DatePickerTxt(),
-            ScheduleBtn(),
-          ],
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              hexStringToColor("#3158C3"),
+              hexStringToColor("#3184C3"),
+              hexStringToColor("#551CB4"),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (!isNotificationScheduled) DatePickerTxt(
+                onDateTimeSelected: () {
+                  setState(() {
+                    isTimeSelected = true;
+                  });
+                },
+              ),
+              if (isTimeSelected && !isNotificationScheduled) ScheduleBtn(onScheduled: () {
+                setState(() {
+                  isNotificationScheduled = true;
+                });
+              }),
+              if (isNotificationScheduled) Text('Ihre Erinnerung wurde festgelegt', style: TextStyle(color: Colors.white, fontSize: 20.0)),
+            ],
+          ),
         ),
       ),
     );
@@ -36,8 +62,11 @@ class _NotificationSettings extends State<NotificationSettings> {
 }
 
 class DatePickerTxt extends StatefulWidget {
+  final VoidCallback onDateTimeSelected;
+
   const DatePickerTxt({
     Key? key,
+    required this.onDateTimeSelected,
   }) : super(key: key);
 
   @override
@@ -47,39 +76,62 @@ class DatePickerTxt extends StatefulWidget {
 class _DatePickerTxtState extends State<DatePickerTxt> {
   @override
   Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: () {
+    return InkWell(
+      onTap: () {
         picker.DatePicker.showDateTimePicker(
           context,
           showTitleActions: true,
-          onChanged: (date) => scheduleTime = date,
+          onChanged: (date) {
+            scheduleTime = date;
+            widget.onDateTimeSelected();
+          },
           onConfirm: (date) {},
         );
       },
-      child: const Text(
-        'Select Date Time',
-        style: TextStyle(color: Colors.blue),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(
+            Icons.access_time,
+            color: Colors.white,
+            size: 24.0,
+          ),
+          const SizedBox(width: 8.0),
+          Text(
+            'Wähle ein Datum und eine Uhrzeit',
+            style: TextStyle(color: Colors.white, fontSize: 18.0),
+          ),
+        ],
       ),
     );
   }
 }
 
 class ScheduleBtn extends StatelessWidget {
+  final VoidCallback onScheduled;
+
   const ScheduleBtn({
     Key? key,
+    required this.onScheduled,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      child: const Text('Schedule notifications'),
+      child: const Text('Erinnerung bestätigen'),
       onPressed: () {
         debugPrint('Notification Scheduled for $scheduleTime');
         NotificationService().scheduleNotification(
-            title: 'Scheduled Notification',
-            body: '$scheduleTime',
-            scheduledNotificationDateTime: scheduleTime);
+          title: 'Scheduled Notification',
+          body: '$scheduleTime',
+          scheduledNotificationDateTime: scheduleTime,
+        );
+        onScheduled();
       },
     );
   }
+}
+
+Color hexStringToColor(String hexString) {
+  return Color(int.parse(hexString.replaceAll("#", ""), radix: 16) + 0xFF000000);
 }
