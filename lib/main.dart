@@ -2,11 +2,12 @@ import 'package:companio_diabetes_app/api/notification_api.dart';
 import 'package:companio_diabetes_app/screens/signin_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-
+import 'package:timezone/data/latest.dart' as tz;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   NotificationApi().initNotification();
+  tz.initializeTimeZones();
   await Firebase.initializeApp(
     //Für die Webanwendung:
    //options: DefaultFirebaseOptions.currentPlatform,
