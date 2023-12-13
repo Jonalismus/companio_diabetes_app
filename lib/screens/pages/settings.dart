@@ -24,7 +24,7 @@ class SettingsPageState extends State<SettingsPage> {
               'Dark Mode: ${_isDarkMode ? 'Enabled' : 'Disabled'}',
               style: TextStyle(fontSize: 20, color: _isDarkMode ? Colors.white : Colors.black),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Switch(
               value: _isDarkMode,
               onChanged: (value) {
