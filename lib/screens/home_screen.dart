@@ -18,7 +18,7 @@ class HomeScreenState extends State<HomeScreen> {
   final List<Widget> _pages = [
     const NotfallplanPage(),
     const HomePage(),
-    const SettingsPage(),
+    const FoodDairyPage(),
   ];
 
   void _onItemTapped(int index) {
@@ -46,7 +46,6 @@ class HomeScreenState extends State<HomeScreen> {
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () {
-              // Implement logout functionality here.
             },
           ),
         ],
@@ -63,8 +62,8 @@ class HomeScreenState extends State<HomeScreen> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Einstellungen',
+            icon: Icon(Icons.food_bank),
+            label: 'Ernährungstagebuch',
           ),
         ],
         currentIndex: _selectedIndex,
