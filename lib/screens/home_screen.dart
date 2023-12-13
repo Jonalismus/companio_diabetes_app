@@ -3,6 +3,7 @@ import 'package:companio_diabetes_app/screens/pages/home.dart';
 import 'package:companio_diabetes_app/screens/pages/notfallplan.dart';
 import 'package:companio_diabetes_app/screens/pages/settings.dart';
 import 'package:flutter/material.dart';
+import 'package:companio_diabetes_app/datenbank/firestore_controller.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -20,6 +21,24 @@ class HomeScreenState extends State<HomeScreen> {
     const FoodDairyPage(),
   ];
 
+  final FirebaseController _firebaseController = FirebaseController();
+
+  @override
+  void initState() {
+    super.initState();
+    // Check and create user document when the screen initializes
+    _checkAndCreateUserDocument();
+  }
+
+  void _checkAndCreateUserDocument() async {
+    try {
+      await _firebaseController.checkAndCreateUserDocument();
+    } catch (e) {
+      // Handle errors, e.g., show a snackbar or log the error
+      print('Error checking and creating user document: $e');
+    }
+  }
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -35,6 +54,7 @@ class HomeScreenState extends State<HomeScreen> {
           IconButton(
             icon: Icon(Icons.logout),
             onPressed: () {
+              // Implement logout functionality here
             },
           ),
         ],
@@ -43,8 +63,7 @@ class HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.medical_services
-            ),
+            icon: Icon(Icons.medical_services),
             label: 'Notfallplan',
           ),
           BottomNavigationBarItem(
@@ -69,7 +88,7 @@ class HomeScreenState extends State<HomeScreen> {
           Center(
             child: ElevatedButton(
               onPressed: () {
-                // Implementiere die Funktionalität für Blutzuckermessung hier.
+                // Implement the functionality for Blutzuckermessung here.
               },
               child: Text('Blutzuckermessung'),
               style: ElevatedButton.styleFrom(
@@ -82,7 +101,7 @@ class HomeScreenState extends State<HomeScreen> {
           Center(
             child: ElevatedButton(
               onPressed: () {
-                // Implementiere die Funktionalität für Insulinrechner hier.
+                // Implement the functionality for Insulinrechner here.
               },
               child: Text('Insulinrechner'),
               style: ElevatedButton.styleFrom(
