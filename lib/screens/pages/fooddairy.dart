@@ -355,7 +355,7 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
       return;
     }
 
-    int? quantity = int.tryParse(_foodQuantityController.text);
+    double? quantity = double.tryParse(_foodQuantityController.text);
     if (quantity == null || quantity <= 0) {
       _showWarningDialog('Error', 'Please enter a valid quantity.');
       return;
