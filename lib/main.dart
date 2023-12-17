@@ -1,4 +1,5 @@
 import 'package:companio_diabetes_app/api/notification_api.dart';
+import 'package:companio_diabetes_app/firebase_options.dart';
 import 'package:companio_diabetes_app/screens/signin_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
