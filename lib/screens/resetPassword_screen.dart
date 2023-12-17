@@ -42,7 +42,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 children: [
-                  Text(
+                  const Text(
                     "Bitte gib die E-Mail-Adresse deines Companio-Kontos ein",
                     style: TextStyle(
                         fontSize: 20,
@@ -88,7 +88,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     ),
                   ),
                 ),
-                child: Text(
+                child: const Text(
                   'Bestätigen',
                   style: TextStyle(
                     color: Colors.black87,

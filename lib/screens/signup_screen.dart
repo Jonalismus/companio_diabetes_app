@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../reusable_widgets/reusable_widgets.dart';
 import '../utilis/colors_utilis.dart';
 import 'home_screen.dart';
+import '../utilis/dao/loadData.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -82,7 +84,10 @@ class SignUpScreenState extends State<SignUpScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const HomeScreen(),
+                          builder: (context) => ChangeNotifierProvider(
+                            create: (context) => DataProvider()..loadData(),
+                            child: const HomeScreen(),
+                          ),
                         ),
                       );
                     }).onError((error, stackTrace) {
