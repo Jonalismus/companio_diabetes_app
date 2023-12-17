@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		06F14A8CAC04362E6E5386E3 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D6E0E62EFA15E4C381C7D63 /* Pods_Runner.framework */; };
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		2BC349652AFE7D980065A961 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2BC349642AFE7D980065A961 /* GoogleService-Info.plist */; };
 		331C808B294A63AB00263BE5 /* RunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331C807B294A618700263BE5 /* RunnerTests.swift */; };
@@ -16,6 +15,7 @@
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
+		A4B0F67CABBC1679FFF9BF53 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D6E0E62EFA15E4C381C7D63 /* Pods_Runner.framework */; };
 		F8C41008D848B30FC7D58A0B /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 908D921AAE8B76DFBF15CC1B /* Pods_RunnerTests.framework */; };
 /* End PBXBuildFile section */
 
@@ -78,11 +78,11 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		97C146EB1CF9000F007C117D /* Frameworks */ = {
+		CE88F090D67056A7C616B141 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				06F14A8CAC04362E6E5386E3 /* Pods_Runner.framework in Frameworks */,
+				A4B0F67CABBC1679FFF9BF53 /* Pods_Runner.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -196,11 +196,11 @@
 				F1CAE3C9AF9931662E55C33C /* [CP] Check Pods Manifest.lock */,
 				9740EEB61CF901F6004384FC /* Run Script */,
 				97C146EA1CF9000F007C117D /* Sources */,
-				97C146EB1CF9000F007C117D /* Frameworks */,
 				97C146EC1CF9000F007C117D /* Resources */,
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				67A5885A6E6DF90EBA4DE19F /* [CP] Embed Pods Frameworks */,
+				CE88F090D67056A7C616B141 /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -218,7 +218,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastUpgradeCheck = 1500;
+				LastUpgradeCheck = 1430;
 				ORGANIZATIONNAME = "";
 				TargetAttributes = {
 					331C8080294A63A400263BE5 = {
