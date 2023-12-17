@@ -1,3 +1,4 @@
+import 'package:companio_diabetes_app/screens/pages/blutzuckermessung.dart';
 import 'package:companio_diabetes_app/screens/pages/fooddairy.dart';
 import 'package:companio_diabetes_app/screens/pages/home.dart';
 import 'package:companio_diabetes_app/screens/pages/notfallplan.dart';
@@ -79,7 +80,9 @@ class HomeScreenState extends State<HomeScreen> {
                 Center(
                   child: ElevatedButton(
                     onPressed: () {
-                      // Implementiere die Funktionalität für Blutzuckermessung hier.
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => BlutzuckermessungPage()),
                     },
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.white,
