@@ -79,7 +79,9 @@ class HomeScreenState extends State<HomeScreen> {
                 Center(
                   child: ElevatedButton(
                     onPressed: () {
-                      // Implementiere die Funktionalität für Blutzuckermessung hier.
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => BlutzuckermessungPage()),
                     },
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.white,
