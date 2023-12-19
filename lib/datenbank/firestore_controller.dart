@@ -9,17 +9,26 @@ class FirebaseController {
     User? currentUser = _auth.currentUser;
 
     if (currentUser != null) {
-      // Reference to the user document in the 'users' collection
+      // Reference to the user document using the UID as the document ID
       DocumentReference userDocRef =
       FirebaseFirestore.instance.collection('users').doc(currentUser.uid);
 
-      // Check if the document exists
+      // Check if the user document exists
       DocumentSnapshot docSnapshot = await userDocRef.get();
 
       if (!docSnapshot.exists) {
-        // If the document doesn't exist, create a new one
+        // If the document doesn't exist, create a new one with subcollections
         await userDocRef.set({
-          'uid': currentUser.uid,
+          'blood_glucose_readings': [],
+          'medication_logs': [],
+          'meal_logs': [],
+        });
+      } else {
+        // If the document exists, update it with the specified fields
+        await userDocRef.update({
+          'blood_glucose_readings': FieldValue.arrayUnion([]),
+          'medication_logs': FieldValue.arrayUnion([]),
+          'meal_logs': FieldValue.arrayUnion([]),
         });
       }
     }
