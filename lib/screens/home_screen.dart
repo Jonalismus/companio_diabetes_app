@@ -1,4 +1,5 @@
 import 'package:companio_diabetes_app/screens/pages/blutzuckermessung.dart';
+import 'package:companio_diabetes_app/screens/pages/bloodsugar_overview_dashboard.dart';
 import 'package:companio_diabetes_app/screens/pages/fooddairy.dart';
 import 'package:companio_diabetes_app/screens/pages/home.dart';
 import 'package:companio_diabetes_app/screens/pages/notfallplan.dart';
@@ -90,6 +91,22 @@ class HomeScreenState extends State<HomeScreen> {
                   child: ElevatedButton(
                     onPressed: () {
                       Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => BloodsugarOverview()),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.deepPurple,
+                    ),
+                    child: const Text('BlutzuckerOverview '),
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => BlutzuckermessungPage()),
                       );
@@ -101,7 +118,7 @@ class HomeScreenState extends State<HomeScreen> {
                     child: const Text('Blutzuckermessung'),
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height:2),
                 Center(
                   child: ElevatedButton(
                     onPressed: () {
@@ -114,7 +131,7 @@ class HomeScreenState extends State<HomeScreen> {
                     child: const Text('Insulinrechner'),
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 2),
                 Center(
                   child: ElevatedButton(
                     onPressed: () {
@@ -131,7 +148,7 @@ class HomeScreenState extends State<HomeScreen> {
                     child: const Text('Ernährungstagebuch'),
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 2),
                 Center(
                   child: ElevatedButton(
                     onPressed: _navigateToNotificationSettings,
@@ -142,7 +159,7 @@ class HomeScreenState extends State<HomeScreen> {
                     child: const Text('Medikamenten-Erinnerung'),
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 2),
                 Center(
                   child: ElevatedButton(
                     onPressed: _navigateToStepCounterPage,
