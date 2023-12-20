@@ -1,3 +1,4 @@
+import 'package:companio_diabetes_app/screens/pages/Insulinrechner.dart';
 import 'package:companio_diabetes_app/screens/pages/blutzuckermessung.dart';
 import 'package:companio_diabetes_app/screens/pages/bloodsugar_overview_dashboard.dart';
 import 'package:companio_diabetes_app/screens/pages/fooddairy.dart';
@@ -122,7 +123,11 @@ class HomeScreenState extends State<HomeScreen> {
                 Center(
                   child: ElevatedButton(
                     onPressed: () {
-                      // Implementiere die Funktionalität für Insulinrechner hier.
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Insulinrechner()),
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.white,
