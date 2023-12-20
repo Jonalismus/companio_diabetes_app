@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class GlucoseData {
@@ -94,11 +95,22 @@ class _BloodsugarOverviewState extends State<BloodsugarOverview> {
           children: [
             Text('Current blood sugar value: ',
               style: TextStyle(
-              color: Colors.black,
-              fontSize: 18,
+              color: Colors.indigo,
+              fontSize: 22,
               ),
             ),
-
+            Container(
+              width: MediaQuery.of(context).size.width * 0.7,
+              alignment: Alignment.center,
+              color: Colors.redAccent,
+              child: Text(
+              '67', // mock for blood sugar value
+              style: TextStyle(
+              fontSize: 90.0,
+              color: Colors.white,
+                  ),
+                ),
+              ),
             SfCartesianChart(
                 primaryXAxis: DateTimeAxis(),
                 series: <CartesianSeries>[
@@ -109,6 +121,18 @@ class _BloodsugarOverviewState extends State<BloodsugarOverview> {
                       yValueMapper: (GlucoseData sales, _) => sales.bloodSugarValue
                   )
                 ],
+            ),
+            Text('MAX ',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 23,
+              ),
+            ),
+            Text('MIN ',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 23,
+              ),
             ),
             Row(
               children: [
