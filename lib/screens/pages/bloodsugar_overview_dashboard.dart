@@ -3,6 +3,8 @@ import 'package:getwidget/getwidget.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
+
+
 class GlucoseData {
   GlucoseData(this.year, this.bloodSugarValue);
   final DateTime year;
@@ -113,22 +115,30 @@ class _BloodsugarOverviewState extends State<BloodsugarOverview> {
               ),
             SfCartesianChart(
                 primaryXAxis: DateTimeAxis(),
-                series: <CartesianSeries>[
-                  // Renders line chart
+                primaryYAxis: NumericAxis(
+                  plotBands: <PlotBand>[
+                  PlotBand(
+                    isVisible: true,
+                    start: 20,
+                    end: 40,
+                    color: Colors.green.withOpacity(0.9),
+                  ),
+                ],),
+              series: <CartesianSeries>[
                   LineSeries<GlucoseData, DateTime>(
                       dataSource: chartData,
-                      xValueMapper: (GlucoseData sales, _) => sales.year,
-                      yValueMapper: (GlucoseData sales, _) => sales.bloodSugarValue
+                      xValueMapper: (GlucoseData bloodSugarValue, _) => bloodSugarValue.year,
+                      yValueMapper: (GlucoseData bloodSugarValue, _) => bloodSugarValue.bloodSugarValue
                   )
                 ],
             ),
-            Text('MAX ',
+            const Text('MAX ',
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 23,
               ),
             ),
-            Text('MIN ',
+            const Text('MIN ',
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 23,
@@ -137,7 +147,7 @@ class _BloodsugarOverviewState extends State<BloodsugarOverview> {
             Row(
               children: [
                 const Text(
-              'Daily Success Range',
+              'Daily blood sugar range',
                   style: TextStyle(
                   color: Colors.black,
                   fontSize: 16,
@@ -166,7 +176,7 @@ class _BloodsugarOverviewState extends State<BloodsugarOverview> {
             Row(
               children: [
                 const Text(
-                  'Weekly Success Range',
+                  'Weekly blood sugar range',
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 16,
