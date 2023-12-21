@@ -32,18 +32,17 @@ class HomeScreenState extends State<HomeScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => NotificationSettings(
+          builder: (context) => const NotificationSettings(
                 title: '',
               )),
     );
   }
-
-  void _navigateToStepCounterPage(){
+  
+  void _navigateToSettings() {
     Navigator.push(
       context,
-      MaterialPageRoute(
-          builder: (context) => StepCounterPage(
-          )),
+      MaterialPageRoute(builder: (context) => const SettingsPage()),
+
     );
   }
 
@@ -52,11 +51,17 @@ class HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Companio'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () {
-            },
+      ),
+      body: Stack(
+        children: [
+          _pages[_selectedIndex],
+          Positioned(
+            top: 20,
+            right : 20,
+            child: IconButton(
+              icon: const Icon(Icons.settings),
+              onPressed: _navigateToSettings,
+            ),
           ),
         ],
       ),
