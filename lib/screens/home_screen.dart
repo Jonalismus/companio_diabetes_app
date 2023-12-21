@@ -2,7 +2,7 @@ import 'package:companio_diabetes_app/screens/pages/blutzuckermessung.dart';
 import 'package:companio_diabetes_app/screens/pages/fooddairy.dart';
 import 'package:companio_diabetes_app/screens/pages/home.dart';
 import 'package:companio_diabetes_app/screens/pages/notfallplan.dart';
-import 'package:companio_diabetes_app/screens/pages/settings.dart';
+import 'package:companio_diabetes_app/screens/pages/stepCounterPage.dart';
 import 'package:flutter/material.dart';
 import 'package:companio_diabetes_app/screens/pages/notificationSettings.dart';
 
@@ -37,11 +37,12 @@ class HomeScreenState extends State<HomeScreen> {
               )),
     );
   }
-
+  
   void _navigateToSettings() {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const SettingsPage()),
+
     );
   }
 
@@ -144,6 +145,17 @@ class HomeScreenState extends State<HomeScreen> {
                       backgroundColor: Colors.deepPurple,
                     ),
                     child: const Text('Medikamenten-Erinnerung'),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Center(
+                  child: ElevatedButton(
+                    onPressed: _navigateToStepCounterPage,
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.deepPurple,
+                    ),
+                    child: const Text('Schrittzähler'),
                   ),
                 ),
               ],
