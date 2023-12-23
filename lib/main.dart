@@ -11,7 +11,7 @@ void main() async {
   tz.initializeTimeZones();
   await Firebase.initializeApp(
     //Für die Webanwendung:
-  // options: DefaultFirebaseOptions.currentPlatform,
+   options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(const MainApp());
 }

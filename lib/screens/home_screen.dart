@@ -5,6 +5,8 @@ import 'package:companio_diabetes_app/screens/pages/notfallplan.dart';
 import 'package:companio_diabetes_app/screens/pages/stepCounterPage.dart';
 import 'package:flutter/material.dart';
 import 'package:companio_diabetes_app/screens/pages/notificationSettings.dart';
+import 'package:companio_diabetes_app/screens/pages/settings.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -37,13 +39,20 @@ class HomeScreenState extends State<HomeScreen> {
               )),
     );
   }
-  
+
   void _navigateToSettings() {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const SettingsPage()),
 
     );
+  }
+
+  void _navigateToStepCounterPage() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const StepCounterPage())
+        );
   }
 
   @override
@@ -65,7 +74,6 @@ class HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -163,3 +171,4 @@ class HomeScreenState extends State<HomeScreen> {
     );
   }
 }
+
