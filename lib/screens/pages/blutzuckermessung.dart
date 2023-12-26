@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class BlutzuckermessungPage extends StatefulWidget {
   const BlutzuckermessungPage({Key? key}) : super(key: key);
@@ -11,7 +13,7 @@ class _BlutzuckermessungPageState extends State<BlutzuckermessungPage> {
   TextEditingController _controller = TextEditingController();
   String _warningMessage = '';
 
-  void _checkBloodSugar() {
+  void _checkBloodSugar() async {
     if (_controller.text.isEmpty) {
       setState(() {
         _warningMessage = 'Bitte geben Sie einen Blutwert ein.';
@@ -32,6 +34,23 @@ class _BlutzuckermessungPageState extends State<BlutzuckermessungPage> {
     } else {
       setState(() {
         _warningMessage = 'Blutwert im normalen Bereich';
+      });
+    }
+
+    // Get the current user
+    User? currentUser = FirebaseAuth.instance.currentUser;
+
+    if (currentUser != null) {
+      // Reference to the user's blood_glucose_readings subcollection
+      CollectionReference readingsCollection = FirebaseFirestore.instance
+          .collection('users')
+          .doc(currentUser.uid)
+          .collection('blood_glucose_readings');
+
+      // Add a new document with the entered glucose reading
+      await readingsCollection.add({
+        'glucose_level': bloodSugarValue,
+        'date_time': Timestamp.now(),
       });
     }
   }
