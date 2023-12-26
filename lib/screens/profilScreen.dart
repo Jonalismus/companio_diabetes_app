@@ -14,6 +14,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   late TextEditingController nameController;
   late TextEditingController ageController;
   late TextEditingController genderController;
+  late TextEditingController bmiController;
 
   @override
   void initState() {
@@ -21,6 +22,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     nameController = TextEditingController(text: currentUser.displayName ?? "");
     ageController = TextEditingController(text: "");
     genderController = TextEditingController(text: "");
+    bmiController = TextEditingController(text: "");
 
     loadUserData();
   }
@@ -33,6 +35,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       setState(() {
         ageController.text = userDoc['age'] ?? "";
         genderController.text = userDoc['gender'] ?? "";
+        bmiController.text = userDoc['bmi'] ?? "";
       });
     } catch (e) {
       print("Error loading user data: $e");
@@ -45,6 +48,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         'name': nameController.text,
         'age': ageController.text,
         'gender': genderController.text,
+        'bmi': bmiController.text,
       });
 
       await currentUser.updateDisplayName(nameController.text);
@@ -86,6 +90,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
             controller: genderController,
             decoration: InputDecoration(labelText: 'Gender'),
           ),
+          SizedBox(height: 16.0),
+          TextField(
+            controller: bmiController,
+            decoration: InputDecoration(labelText: 'BMI'),
+            keyboardType: TextInputType.number,
+          ),
         ],
       ),
     );
@@ -96,6 +106,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     nameController.dispose();
     ageController.dispose();
     genderController.dispose();
+    bmiController.dispose();
     super.dispose();
   }
 }

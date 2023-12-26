@@ -3,6 +3,7 @@ import 'package:companio_diabetes_app/screens/pages/fooddairy.dart';
 import 'package:companio_diabetes_app/screens/pages/home.dart';
 import 'package:companio_diabetes_app/screens/pages/notfallplan.dart';
 import 'package:companio_diabetes_app/screens/pages/stepCounterPage.dart';
+import 'package:companio_diabetes_app/datenbank/firestore_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:companio_diabetes_app/screens/pages/notificationSettings.dart';
 
@@ -16,11 +17,24 @@ class HomeScreen extends StatefulWidget {
 class HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 1;
 
+  final FirebaseController _firebaseController = FirebaseController();
+
+
   final List<Widget> _pages = [
     const NotfallplanPage(),
     const HomePage(),
     const FoodDairyPage(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeFirebase();
+  }
+
+  void _initializeFirebase() async {
+    await _firebaseController.checkAndCreateUserDocument();
+  }
 
   void _onItemTapped(int index) {
     setState(() {
