@@ -20,7 +20,7 @@ class _InsulinrechnerState extends State<Insulinrechner> {
   double bolusPercentageVal = 0.6;
   int mealsPerDayVal = 3;
   double afterMealTargetGlucoseVal = 90;
-  bool pumpe = false; // Change this value
+  bool pumpe = true; // Change this value
   late double bloodSugarValue = 60; //get from database in future
   late double carbohydrates;
   late double insulinUnits = 0;
@@ -107,17 +107,17 @@ class _InsulinrechnerState extends State<Insulinrechner> {
                     controller: _controllerGlycose,
                     keyboardType: const TextInputType.numberWithOptions(decimal: true),
                     decoration: const InputDecoration(
-                      labelText: 'Aktuellen Blutwert (mg/dl) eingeben',
+                      labelText: 'Aktuellen Blutwert (mg/dl): ',
                     ),
                   ),
                   const SizedBox(height: 13),
                   ElevatedButton(
                     onPressed: _checkBloodSugar,
-                    child: const Text('Blutwert überprüfen'),
+                    child: const Text('Blutwert eingeben'),
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    _warningMessage,
+                    _warningMessageOne,
                     style: const TextStyle(
                       color: Colors.red,
                       fontSize: 16,
@@ -138,8 +138,9 @@ class _InsulinrechnerState extends State<Insulinrechner> {
                   const SizedBox(height: 10),
                     ElevatedButton(
                       onPressed: () {
-                        _checkCarbohydrates;
+                        _checkCarbohydrates();
                         insulinUnits = calculateInsulinBedarf(bloodSugarValue, carbohydrates);
+                        setState(() {
                           Column(mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               const Text(
@@ -152,7 +153,7 @@ class _InsulinrechnerState extends State<Insulinrechner> {
                               Container(
                                 width: MediaQuery.of(context).size.width * 0.7,
                                 alignment: Alignment.center,
-                                color: Colors.redAccent,
+                                color: Colors.indigo,
                                 child: Text('$insulinUnits', // mock for blood sugar value
                                   style: TextStyle(
                                     fontSize: 90.0,
@@ -161,6 +162,7 @@ class _InsulinrechnerState extends State<Insulinrechner> {
                                 ),
                               ),
                             ],);
+                        });
                         },
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.white,
@@ -170,7 +172,7 @@ class _InsulinrechnerState extends State<Insulinrechner> {
                     ),
                   const SizedBox(height: 13),
                   Text(
-                  _warningMessage,
+                  _warningMessageTwo,
                   style: const TextStyle(
                   color: Colors.red,
                   fontSize: 12,
@@ -193,7 +195,7 @@ class _InsulinrechnerState extends State<Insulinrechner> {
                     Container(
                       width: MediaQuery.of(context).size.width * 0.7,
                       alignment: Alignment.center,
-                      color: Colors.redAccent,
+                      color: Colors.deepPurple,
                       child: Text('$insulinUnits', // mock for blood sugar value
                         style: TextStyle(
                           fontSize: 90.0,
