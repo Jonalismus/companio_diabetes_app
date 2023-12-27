@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../profilScreen.dart';
+import 'FeedbackScreen.dart';
 import 'Services/DiabetesEducationPage.dart';
 
 
@@ -41,12 +42,22 @@ class SettingsPageState extends State<SettingsPage> {
               onPressed: () {
                 Navigator.push(
                   context,
+                  MaterialPageRoute(builder: (context) =>  FeedbackScreen()),
+                );
+              },
+              child: const Text('Feedback'),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
                   MaterialPageRoute(builder: (context) => const DiabetesEducationPage()),
                 );
               },
               child: const Text('Mehr über Diabetes erfahren'),
             ),
-            const SizedBox(height: 20), // Fügt 20 Pixel Abstand hinzu
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _logout,
               child: const Text('Logout'),
