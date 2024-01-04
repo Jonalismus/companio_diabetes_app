@@ -20,7 +20,7 @@ class FoodDairyPage extends StatefulWidget {
 class FoodItem {
   String name;
   double quantity;
-  double carbohydrate_100g; //TODO
+  double carbohydrate_100g;
 
   FoodItem(
       {required this.name,
