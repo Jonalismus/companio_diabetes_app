@@ -14,18 +14,18 @@ class HomeScreenState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: ElevatedButton(
-          child: const Text("Logout"),
-          onPressed: () {
-            FirebaseAuth.instance.signOut().then((value) {
-              print("Signed Out");
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const SignInScreen()));
-            });
-          },
-        ),
+      //   child: ElevatedButton(
+      //     child: const Text("Logout"),
+      //     onPressed: () {
+      //       FirebaseAuth.instance.signOut().then((value) {
+      //         print("Signed Out");
+      //         Navigator.push(
+      //             context,
+      //             MaterialPageRoute(
+      //                 builder: (context) => const SignInScreen()));
+      //       });
+      //     },
+      //   ),
       ),
     );
   }

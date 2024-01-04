@@ -1,4 +1,5 @@
 import 'package:companio_diabetes_app/screens/pages/Insulinrechner.dart';
+import 'package:companio_diabetes_app/screens/pages/sugarIntakeOverview.dart';
 import 'package:companio_diabetes_app/screens/pages/blutzuckermessung.dart';
 import 'package:companio_diabetes_app/screens/pages/bloodsugar_overview_dashboard.dart';
 import 'package:companio_diabetes_app/screens/pages/fooddairy.dart';
@@ -9,6 +10,9 @@ import 'package:companio_diabetes_app/datenbank/firestore_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:companio_diabetes_app/screens/pages/notificationSettings.dart';
 import 'package:companio_diabetes_app/screens/pages/settings.dart';
+import 'package:provider/provider.dart';
+
+import '../utilis/dao/loadData.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -71,12 +75,23 @@ class HomeScreenState extends State<HomeScreen> {
         );
   }
 
+  void _navigateToSugarIntakeOverviewPage(){
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>  ChangeNotifierProvider(
+            create: (context) => DataProvider()..loadData(),
+            child: SugarIntakeOverview(),
+          ),)
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Companio'),
-      ),
+      // appBar: AppBar(
+      //   title: const Text('Companio'),
+      // ),
       body: Stack(
         children: [
           _pages[_selectedIndex],
@@ -200,6 +215,17 @@ class HomeScreenState extends State<HomeScreen> {
                       backgroundColor: Colors.deepPurple,
                     ),
                     child: const Text('Schrittzähler'),
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Center(
+                  child: ElevatedButton(
+                    onPressed: _navigateToSugarIntakeOverviewPage,
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.deepPurple,
+                    ),
+                    child: const Text('Zuckeraufnahmenübersicht'),
                   ),
                 ),
               ],
