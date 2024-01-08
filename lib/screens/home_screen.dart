@@ -166,23 +166,6 @@ class HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 2),
                 Center(
                   child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const FoodDairyPage()),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: Colors.deepPurple,
-                    ),
-                    child: const Text('Ernährungstagebuch'),
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Center(
-                  child: ElevatedButton(
                     onPressed: _navigateToNotificationSettings,
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.white,
