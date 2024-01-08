@@ -76,18 +76,20 @@ class HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Companio'),
-      ),
-      body: Stack(
-        children: [
-          _pages[_selectedIndex],
+        actions: [
           Positioned(
             top: 20,
-            right : 20,
+            right: 20,
             child: IconButton(
               icon: const Icon(Icons.settings),
               onPressed: _navigateToSettings,
             ),
           ),
+        ],
+      ),
+      body: Stack(
+        children: [
+          _pages[_selectedIndex],
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
