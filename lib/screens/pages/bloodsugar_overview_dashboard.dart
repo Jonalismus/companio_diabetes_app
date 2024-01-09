@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-
+import '../../utilis/colors_utilis.dart';
 
 class GlucoseData {
   GlucoseData(this.year, this.bloodSugarValue);
@@ -11,7 +11,6 @@ class GlucoseData {
 }
 
 class BloodsugarOverview extends StatefulWidget {
-
   @override
   _BloodsugarOverviewState createState() => _BloodsugarOverviewState();
 }
@@ -38,7 +37,6 @@ class _BloodsugarOverviewState extends State<BloodsugarOverview> {
   late String dailyRange = (dailyOutOfRangePercentage*100).toString();
   double weeklyOutOfRangePercentage = 0.85;
   late String weeklyRange = (weeklyOutOfRangePercentage*100).toString();
-
 
   void _showDailyOverlay(context) async {
     final box = _dailyKey.currentContext?.findRenderObject() as RenderBox;
@@ -81,7 +79,6 @@ class _BloodsugarOverviewState extends State<BloodsugarOverview> {
       ),
     );
   }
-  //Source: https://stackoverflow.com/questions/64186397/create-info-popup-in-flutter
 
   @override
   Widget build(BuildContext context) {
@@ -89,121 +86,146 @@ class _BloodsugarOverviewState extends State<BloodsugarOverview> {
       appBar: AppBar(
         title: const Text('Blutzucker Overview'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Text('Current blood sugar value: ',
-              style: TextStyle(
-              color: Colors.indigo,
-              fontSize: 22,
+      body: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              hexStringToColor("#3158C3"),
+              hexStringToColor("#3184C3"),
+              hexStringToColor("#551CB4")
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(
+                'Current blood sugar value: ',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 22,
+                ),
               ),
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width * 0.7,
-              alignment: Alignment.center,
-              color: Colors.redAccent,
-              child: Text(
-              '67', // mock for blood sugar value
-              style: TextStyle(
-              fontSize: 90.0,
-              color: Colors.white,
+              Container(
+                width: MediaQuery.of(context).size.width * 0.7,
+                alignment: Alignment.center,
+                color: Colors.redAccent,
+                child: Text(
+                  '67', // mock for blood sugar value
+                  style: TextStyle(
+                    fontSize: 90.0,
+                    color: Colors.white,
                   ),
                 ),
               ),
-            SfCartesianChart(
-                primaryXAxis: DateTimeAxis(),
-                primaryYAxis: NumericAxis(
-                  plotBands: <PlotBand>[
-                  PlotBand(
-                    isVisible: true,
-                    start: 20,
-                    end: 40,
-                    color: Colors.green.withOpacity(0.9),
+              SfCartesianChart(
+                primaryXAxis: DateTimeAxis(
+                  labelStyle: TextStyle(
+                    color: Colors.white,
                   ),
-                ],),
-              series: <CartesianSeries>[
+                ),
+                primaryYAxis: NumericAxis(
+                  labelStyle: TextStyle(
+                    color: Colors.white,
+                  ),
+                  plotBands: <PlotBand>[
+                    PlotBand(
+                      isVisible: true,
+                      start: 20,
+                      end: 40,
+                      color: Colors.green.withOpacity(0.9),
+                    ),
+                  ],
+                ),
+                series: <CartesianSeries>[
                   LineSeries<GlucoseData, DateTime>(
-                      dataSource: chartData,
-                      xValueMapper: (GlucoseData bloodSugarValue, _) => bloodSugarValue.year,
-                      yValueMapper: (GlucoseData bloodSugarValue, _) => bloodSugarValue.bloodSugarValue
+                    dataSource: chartData,
+                    xValueMapper: (GlucoseData bloodSugarValue, _) => bloodSugarValue.year,
+                    yValueMapper: (GlucoseData bloodSugarValue, _) => bloodSugarValue.bloodSugarValue,
+                    color: Colors.red,
                   )
                 ],
-            ),
-            const Text('MAX ',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 23,
               ),
-            ),
-            const Text('MIN ',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 23,
-              ),
-            ),
-            Row(
-              children: [
-                const Text(
-              'Daily blood sugar range',
-                  style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
-                  ),
+              const Text('MAX ',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 23,
                 ),
-              IconButton(
-                key: _dailyKey,
-                icon: const Icon(Icons.info),
-                onPressed: () => _showDailyOverlay(context),
+              ),
+              const Text('MIN ',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 23,
+                ),
+              ),
+              Row(
+                children: [
+                  const Text(
+                    'Daily blood sugar range',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
+                  ),
+                  IconButton(
+                    key: _dailyKey,
+                    icon: const Icon(Icons.info),
+                    onPressed: () => _showDailyOverlay(context),
+                  ),
+                ],
+              ),
+              GFProgressBar(
+                percentage: dailyOutOfRangePercentage,
+                lineHeight: 30,
+                alignment: MainAxisAlignment.spaceBetween,
+                leading  : const Icon( Icons.sentiment_dissatisfied, color: Colors.red),
+                trailing: const Icon( Icons.sentiment_satisfied, color: Colors.green),
+                backgroundColor: Colors.redAccent,
+                progressBarColor: Colors.green,
+                child:
+                Text('$dailyRange %', textAlign: TextAlign.end,
+                  style: const TextStyle(fontSize: 18, color: Colors.white),
+                ),
+              ),
+              Row(
+                children: [
+                  const Text(
+                    'Weekly blood sugar range',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
+                  ),
+                  IconButton(
+                    key: _weeklyKey,
+                    icon: const Icon(Icons.info),
+                    onPressed: () => _showWeeklyOverlay(context),
+                  ),
+                ],
+              ),
+              GFProgressBar(
+                percentage: weeklyOutOfRangePercentage,
+                lineHeight: 30,
+                alignment: MainAxisAlignment.spaceBetween,
+                leading  : const Icon( Icons.sentiment_dissatisfied, color: Colors.red),
+                trailing: const Icon( Icons.sentiment_satisfied, color: Colors.green),
+                backgroundColor: Colors.redAccent,
+                progressBarColor: Colors.green,
+                child:
+                Text('$weeklyRange %', textAlign: TextAlign.end,
+                  style: const TextStyle(fontSize: 18, color: Colors.white),
+                ),
               ),
             ],
-            ),
-            GFProgressBar(
-              percentage: dailyOutOfRangePercentage,
-              lineHeight: 30,
-              alignment: MainAxisAlignment.spaceBetween,
-              leading  : const Icon( Icons.sentiment_dissatisfied, color: Colors.red),
-              trailing: const Icon( Icons.sentiment_satisfied, color: Colors.green),
-              backgroundColor: Colors.redAccent,
-              progressBarColor: Colors.green,
-              child:
-              Text('$dailyRange %', textAlign: TextAlign.end,
-                style: const TextStyle(fontSize: 18, color: Colors.white),
-              ),
-            ),
-            Row(
-              children: [
-                const Text(
-                  'Weekly blood sugar range',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
-                  ),
-                ),
-                IconButton(
-                  key: _weeklyKey,
-                  icon: const Icon(Icons.info),
-                  onPressed: () => _showWeeklyOverlay(context),
-                ),
-              ],
-            ),
-            GFProgressBar(
-              percentage: weeklyOutOfRangePercentage,
-              lineHeight: 30,
-              alignment: MainAxisAlignment.spaceBetween,
-              leading  : const Icon( Icons.sentiment_dissatisfied, color: Colors.red),
-              trailing: const Icon( Icons.sentiment_satisfied, color: Colors.green),
-              backgroundColor: Colors.redAccent,
-              progressBarColor: Colors.green,
-              child:
-              Text('$weeklyRange %', textAlign: TextAlign.end,
-                style: const TextStyle(fontSize: 18, color: Colors.white),
-              ),
-            ),
-          ],
-         ),
-       ),
-     );
-   }
+          ),
+        ),
+      ),
+    );
+  }
 }

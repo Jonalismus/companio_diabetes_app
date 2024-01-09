@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:companio_diabetes_app/screens/pages/Insulinrechner.dart';
 import 'package:companio_diabetes_app/screens/pages/blutzuckermessung.dart';
 import 'package:companio_diabetes_app/screens/pages/bloodsugar_overview_dashboard.dart';
@@ -6,10 +7,8 @@ import 'package:companio_diabetes_app/screens/pages/home.dart';
 import 'package:companio_diabetes_app/screens/pages/notfallplan.dart';
 import 'package:companio_diabetes_app/screens/pages/stepCounterPage.dart';
 import 'package:companio_diabetes_app/datenbank/firestore_controller.dart';
-import 'package:flutter/material.dart';
 import 'package:companio_diabetes_app/screens/pages/notificationSettings.dart';
 import 'package:companio_diabetes_app/screens/pages/settings.dart';
-
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -20,9 +19,7 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 1;
-
   final FirebaseController _firebaseController = FirebaseController();
-
 
   final List<Widget> _pages = [
     const NotfallplanPage(),
@@ -50,9 +47,10 @@ class HomeScreenState extends State<HomeScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => const NotificationSettings(
-                title: '',
-              )),
+        builder: (context) => const NotificationSettings(
+          title: '',
+        ),
+      ),
     );
   }
 
@@ -60,36 +58,35 @@ class HomeScreenState extends State<HomeScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const SettingsPage()),
-
     );
   }
 
   void _navigateToStepCounterPage() {
     Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const StepCounterPage())
-        );
+      context,
+      MaterialPageRoute(builder: (context) => const StepCounterPage()),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      body: Center(
+        child: Stack(
+          children: [
+            _pages[_selectedIndex],
+          ],
+        ),
+      ),
       appBar: AppBar(
         title: const Text('Companio'),
         actions: [
-          Positioned(
-            top: 20,
-            right: 20,
+          Align(
             child: IconButton(
               icon: const Icon(Icons.settings),
               onPressed: _navigateToSettings,
             ),
           ),
-        ],
-      ),
-      body: Stack(
-        children: [
-          _pages[_selectedIndex],
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -113,83 +110,114 @@ class HomeScreenState extends State<HomeScreen> {
       ),
       floatingActionButton: _selectedIndex == 2 || _selectedIndex == 0
           ? null
-          : Column(
-              mainAxisAlignment: MainAxisAlignment.end,
+          : Padding(
+        padding: const EdgeInsets.only(left: 32),
+        child: Center(
+          child: Container(
+            width: double.infinity,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const SizedBox(height: 16),
-                Center(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => BloodsugarOverview()),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: Colors.deepPurple,
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => BloodsugarOverview()),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.white,
+                    onPrimary: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
                     ),
-                    child: const Text('BlutzuckerOverview '),
+                    minimumSize: Size(double.infinity, 60.0),
+                  ),
+                  child: const Text(
+                    'BlutzuckerOverview',
+                    style: TextStyle(fontSize: 18.0),
                   ),
                 ),
-                const SizedBox(height: 2),
-                Center(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => BlutzuckermessungPage()),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: Colors.deepPurple,
+                const SizedBox(height: 12),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => BlutzuckermessungPage()),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.white,
+                    onPrimary: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
                     ),
-                    child: const Text('Blutzuckermessung'),
+                    minimumSize: Size(double.infinity, 60.0),
+                  ),
+                  child: const Text(
+                    'Blutzuckermessung',
+                    style: TextStyle(fontSize: 18.0),
                   ),
                 ),
-                const SizedBox(height:2),
-                Center(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => Insulinrechner()),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: Colors.deepPurple,
+                const SizedBox(height: 12),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Insulinrechner()),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.white,
+                    onPrimary: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
                     ),
-                    child: const Text('Insulinrechner'),
+                    minimumSize: Size(double.infinity, 60.0),
+                  ),
+                  child: const Text(
+                    'Insulinrechner',
+                    style: TextStyle(fontSize: 18.0),
                   ),
                 ),
-                const SizedBox(height: 2),
-                Center(
-                  child: ElevatedButton(
-                    onPressed: _navigateToNotificationSettings,
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: Colors.deepPurple,
+                const SizedBox(height: 12),
+                ElevatedButton(
+                  onPressed: _navigateToNotificationSettings,
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.white,
+                    onPrimary: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
                     ),
-                    child: const Text('Medikamenten-Erinnerung'),
+                    minimumSize: Size(double.infinity, 60.0),
+                  ),
+                  child: const Text(
+                    'Medikamenten-Erinnerung',
+                    style: TextStyle(fontSize: 18.0),
                   ),
                 ),
-                const SizedBox(height: 2),
-                Center(
-                  child: ElevatedButton(
-                    onPressed: _navigateToStepCounterPage,
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: Colors.deepPurple,
+                const SizedBox(height: 12),
+                ElevatedButton(
+                  onPressed: _navigateToStepCounterPage,
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.white,
+                    onPrimary: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
                     ),
-                    child: const Text('Schrittzähler'),
+                    minimumSize: Size(double.infinity, 60.0),
+                  ),
+                  child: const Text(
+                    'Schrittzähler',
+                    style: TextStyle(fontSize: 18.0),
                   ),
                 ),
               ],
             ),
+          ),
+        ),
+      ),
     );
   }
 }
-

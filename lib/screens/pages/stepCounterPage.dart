@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:pedometer/pedometer.dart';
+import '../../utilis/colors_utilis.dart';
 import 'Services/notifi_service.dart';
 
 
@@ -86,7 +87,21 @@ class _StepCounterPageState extends State<StepCounterPage> {
       appBar: AppBar(
         title: const Text('Schrittzähler'),
       ),
-      body: Center(
+    body: Container(
+    width: MediaQuery.of(context).size.width,
+    height: MediaQuery.of(context).size.height,
+    decoration: BoxDecoration(
+    gradient: LinearGradient(
+    colors: [
+    hexStringToColor("#3158C3"),
+    hexStringToColor("#3184C3"),
+    hexStringToColor("#551CB4")
+    ],
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    ),
+    ),
+      child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -126,6 +141,7 @@ class _StepCounterPageState extends State<StepCounterPage> {
           ],
         ),
       ),
+    ),
     );
   }
 }

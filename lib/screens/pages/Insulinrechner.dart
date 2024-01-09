@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../utilis/colors_utilis.dart';
 import 'Services/insulinCalculator.dart';
 
 class Insulinrechner extends StatefulWidget {
@@ -7,7 +8,6 @@ class Insulinrechner extends StatefulWidget {
   @override
   _InsulinrechnerState createState() => _InsulinrechnerState();
 }
-
 
 class _InsulinrechnerState extends State<Insulinrechner> {
   TextEditingController _controllerGlycose = TextEditingController();
@@ -48,20 +48,20 @@ class _InsulinrechnerState extends State<Insulinrechner> {
   }
 
   double calculateInsulinBedarf(double bloodSugarValue, carbsIntake) {
-      InsulinCalculator insulinCalc = InsulinCalculator(
-          totalUnitsVal,
-          basalPercentageVal,
-          bolusPercentageVal,
-          mealsPerDayVal,
-          afterMealTargetGlucoseVal);
+    InsulinCalculator insulinCalc = InsulinCalculator(
+        totalUnitsVal,
+        basalPercentageVal,
+        bolusPercentageVal,
+        mealsPerDayVal,
+        afterMealTargetGlucoseVal);
 
-      double corrFactor = InsulinCalculator.getCorrectionFactor(
-          totalUnitsVal, true, false);
-      double premealCorrUnits = insulinCalc.getPremealCorrectionUnits(
-          bloodSugarValue, "rapid", corrFactor);
-      double afterMealInsulin = insulinCalc.getAfterMealInsulin(
-          carbsIntake, premealCorrUnits);
-      return afterMealInsulin;
+    double corrFactor =
+        InsulinCalculator.getCorrectionFactor(totalUnitsVal, true, false);
+    double premealCorrUnits = insulinCalc.getPremealCorrectionUnits(
+        bloodSugarValue, "rapid", corrFactor);
+    double afterMealInsulin =
+        insulinCalc.getAfterMealInsulin(carbsIntake, premealCorrUnits);
+    return afterMealInsulin;
   }
 
   @override
@@ -70,118 +70,140 @@ class _InsulinrechnerState extends State<Insulinrechner> {
       appBar: AppBar(
         title: const Text('Insulinrechner'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(56.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            if (pumpe)
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Current blood sugar value: ',
-                    style: TextStyle(
-                      color: Colors.indigo,
-                      fontSize: 22,
-                    ),
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.7,
-                    alignment: Alignment.center,
-                    color: Colors.redAccent,
-                    child: Text('$bloodSugarValue', // mock for blood sugar value
+      body: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              hexStringToColor("#3158C3"),
+              hexStringToColor("#3184C3"),
+              hexStringToColor("#551CB4")
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(56.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              if (pumpe)
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Current blood sugar value: ',
                       style: TextStyle(
-                        fontSize: 90.0,
                         color: Colors.white,
+                        fontSize: 22,
                       ),
                     ),
-                  ),
-                ],
-              )
-            else
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.7,
+                      alignment: Alignment.center,
+                      color: Colors.redAccent,
+                      child: Text(
+                        '$bloodSugarValue', // mock for blood sugar value
+                        style: TextStyle(
+                          fontSize: 90.0,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              else
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextField(
+                      controller: _controllerGlycose,
+                      keyboardType:
+                          const TextInputType.numberWithOptions(decimal: true),
+                      decoration: const InputDecoration(
+                        labelText: 'Aktuellen Blutwert (mg/dl): ',
+                      ),
+                    ),
+                    const SizedBox(height: 13),
+                    ElevatedButton(
+                      onPressed: _checkBloodSugar,
+                      child: const Text('Blutwert eingeben'),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      _warningMessageOne,
+                      style: const TextStyle(
+                        color: Colors.red,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   TextField(
-                    controller: _controllerGlycose,
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    controller: _controllerCarbohydrates,
+                    keyboardType:
+                        const TextInputType.numberWithOptions(decimal: true),
                     decoration: const InputDecoration(
-                      labelText: 'Aktuellen Blutwert (mg/dl): ',
+                      labelText: 'Kohlenhydrate in Gramm: ',
+                      labelStyle: TextStyle(color: Colors.white),
                     ),
-                  ),
-                  const SizedBox(height: 13),
-                  ElevatedButton(
-                    onPressed: _checkBloodSugar,
-                    child: const Text('Blutwert eingeben'),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    _warningMessageOne,
-                    style: const TextStyle(
-                      color: Colors.red,
-                      fontSize: 16,
-                    ),
-                  ),
-                ],
-              ),
-                  Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                  TextField(
-                  controller: _controllerCarbohydrates,
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  decoration: const InputDecoration(
-                  labelText: 'Kohlenhydrate in Gramm: ',
-                  ),
                   ),
                   const SizedBox(height: 10),
-                    ElevatedButton(
-                      onPressed: () {
-                        _checkCarbohydrates();
-                        insulinUnits = calculateInsulinBedarf(bloodSugarValue, carbohydrates);
-                        setState(() {
-                          Column(mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Benötigte Insulin Units: ',
+                  ElevatedButton(
+                    onPressed: () {
+                      _checkCarbohydrates();
+                      insulinUnits = calculateInsulinBedarf(
+                          bloodSugarValue, carbohydrates);
+                      setState(() {
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Benötigte Insulin Units: ',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 22,
+                              ),
+                            ),
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.7,
+                              alignment: Alignment.center,
+                              color: Colors.indigo,
+                              child: Text(
+                                '$insulinUnits', // mock for blood sugar value
                                 style: TextStyle(
-                                  color: Colors.indigo,
-                                  fontSize: 22,
+                                  fontSize: 90.0,
+                                  color: Colors.white,
                                 ),
                               ),
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.7,
-                                alignment: Alignment.center,
-                                color: Colors.indigo,
-                                child: Text('$insulinUnits', // mock for blood sugar value
-                                  style: TextStyle(
-                                    fontSize: 90.0,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            ],);
-                        });
-                        },
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        backgroundColor: Colors.deepPurple,
-                      ),
-                      child: const Text('Insulinbedarf berechnen'),
+                            ),
+                          ],
+                        );
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.deepPurple,
                     ),
+                    child: const Text('Insulinbedarf berechnen'),
+                  ),
                   const SizedBox(height: 13),
                   Text(
-                  _warningMessageTwo,
-                  style: const TextStyle(
-                  color: Colors.red,
-                  fontSize: 12,
+                    _warningMessageTwo,
+                    style: const TextStyle(
+                      color: Colors.red,
+                      fontSize: 12,
+                    ),
                   ),
-                  ),
-                    const SizedBox(height: 1),
-                  ],
-               ),
-              if (insulinUnits>0)
+                  const SizedBox(height: 1),
+                ],
+              ),
+              if (insulinUnits > 0)
                 Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -196,7 +218,8 @@ class _InsulinrechnerState extends State<Insulinrechner> {
                       width: MediaQuery.of(context).size.width * 0.7,
                       alignment: Alignment.center,
                       color: Colors.deepPurple,
-                      child: Text('$insulinUnits', // mock for blood sugar value
+                      child: Text(
+                        '$insulinUnits', // mock for blood sugar value
                         style: TextStyle(
                           fontSize: 90.0,
                           color: Colors.white,
@@ -205,10 +228,10 @@ class _InsulinrechnerState extends State<Insulinrechner> {
                     ),
                   ],
                 )
-             ],
+            ],
+          ),
         ),
       ),
     );
   }
 }
-
