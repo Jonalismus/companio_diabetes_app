@@ -22,6 +22,7 @@ class FirebaseController {
           'blood_glucose_readings': [],
           'medication_logs': [],
           'meal_logs': [],
+          'insulin_recommendations': [],
         });
       } else {
         // If the document exists, update it with the specified fields
@@ -29,6 +30,7 @@ class FirebaseController {
           'blood_glucose_readings': FieldValue.arrayUnion([]),
           'medication_logs': FieldValue.arrayUnion([]),
           'meal_logs': FieldValue.arrayUnion([]),
+          'insulin_recommendations': FieldValue.arrayUnion([])
         });
       }
     }

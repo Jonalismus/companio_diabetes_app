@@ -23,7 +23,14 @@ class _BlutzuckermessungPageState extends State<BlutzuckermessungPage> {
       return;
     }
 
-    double bloodSugarValue = double.tryParse(_controller.text) ?? 0;
+    double? bloodSugarValue = double.tryParse(_controller.text);
+
+    if (bloodSugarValue == null) {
+      setState(() {
+        _warningMessage = 'Ungültige Eingabe. Bitte geben Sie eine numerische Wert ein.';
+      });
+      return;
+    }
 
     if (bloodSugarValue < 50) {
       setState(() {
