@@ -9,6 +9,7 @@ import 'package:companio_diabetes_app/screens/pages/stepCounterPage.dart';
 import 'package:companio_diabetes_app/datenbank/firestore_controller.dart';
 import 'package:companio_diabetes_app/screens/pages/notificationSettings.dart';
 import 'package:companio_diabetes_app/screens/pages/settings.dart';
+import 'package:companio_diabetes_app/datenbank/BloodSugarManager.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -31,6 +32,7 @@ class HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _initializeFirebase();
+    BloodSugarManager.instance.startSimulation();
   }
 
   void _initializeFirebase() async {
