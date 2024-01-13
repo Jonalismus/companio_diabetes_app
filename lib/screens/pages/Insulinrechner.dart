@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../utilis/colors_utilis.dart';
+import 'Services/getLastGlycoseValueFromDatabase.dart';
 import 'Services/insulinCalculator.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Insulinrechner extends StatefulWidget {
   const Insulinrechner({Key? key}) : super(key: key);
@@ -21,11 +24,30 @@ class _InsulinrechnerState extends State<Insulinrechner> {
   int mealsPerDayVal = 3;
   double afterMealTargetGlucoseVal = 90;
   bool pumpe = true; // Change this value
-  late double bloodSugarValue = 60; //get from database in future
+  late double bloodSugarValue; // will be retrived from data base or from the user input,if pumpe is not available
   late double carbohydrates;
   late double insulinUnits = 0;
 
-  void _checkBloodSugar() {
+  @override
+  void initState() {
+    super.initState();
+    _loadData(); // Call the method in initState or wherever appropriate
+  }
+
+  Future<void> _loadData() async {
+    try {
+      bloodSugarValue = await readLastGlucoseValue();
+      setState(() {
+        // Set the state to trigger a rebuild with the new data
+      });
+    } catch (e) {
+      // Handle the exception, e.g., show an error message
+      print('Error: $e');
+    }
+  }
+
+
+  Future<void> _checkBloodSugar() async {
     if (_controllerGlycose.text.isEmpty) {
       setState(() {
         _warningMessageOne = 'Geben Sie einen Blutwert ein.';
@@ -33,6 +55,22 @@ class _InsulinrechnerState extends State<Insulinrechner> {
       return;
     } else {
       bloodSugarValue = double.tryParse(_controllerGlycose.text) ?? 0;
+      // Get the current user
+      User? currentUser = FirebaseAuth.instance.currentUser;
+
+      if (currentUser != null) {
+        // Reference to the user's blood_glucose_readings subcollection
+        CollectionReference readingsCollection = FirebaseFirestore.instance
+            .collection('users')
+            .doc(currentUser.uid)
+            .collection('blood_glucose_readings');
+
+        // Add a new document with the entered glucose reading
+        await readingsCollection.add({
+          'glucose_level': bloodSugarValue,
+          'date_time': Timestamp.now(),
+        });
+      }
     }
   }
 
