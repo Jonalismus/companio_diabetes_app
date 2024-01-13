@@ -31,17 +31,15 @@ class _InsulinrechnerState extends State<Insulinrechner> {
   @override
   void initState() {
     super.initState();
-    _loadData(); // Call the method in initState or wherever appropriate
+    _loadData();
   }
 
   Future<void> _loadData() async {
     try {
       bloodSugarValue = await readLastGlucoseValue();
       setState(() {
-        // Set the state to trigger a rebuild with the new data
       });
     } catch (e) {
-      // Handle the exception, e.g., show an error message
       print('Error: $e');
     }
   }
