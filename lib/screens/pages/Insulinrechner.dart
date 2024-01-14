@@ -37,6 +37,7 @@ class _InsulinrechnerState extends State<Insulinrechner> {
   Future<void> _loadGlyoseData() async {
     try {
       bloodSugarValue = await GlucoseDataRetriever.readLastGlucoseValue();
+      //TODO: add functions that would get totalUnitsVal, basalPercentage and bolusPercentage from firebase instead of mocks
       setState(() {
       });
     } catch (e) {
@@ -106,7 +107,8 @@ class _InsulinrechnerState extends State<Insulinrechner> {
       appBar: AppBar(
         title: const Text('Insulinrechner'),
       ),
-      body: Container(
+      body: SingleChildScrollView(
+      child :Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         decoration: BoxDecoration(
@@ -192,6 +194,7 @@ class _InsulinrechnerState extends State<Insulinrechner> {
                   const SizedBox(height: 10),
                   ElevatedButton(
                     onPressed: () {
+                      FocusScope.of(context).unfocus();
                       _checkCarbohydrates();
                       insulinUnits = calculateInsulinBedarf(
                           bloodSugarValue, carbohydrates);
@@ -268,6 +271,8 @@ class _InsulinrechnerState extends State<Insulinrechner> {
           ),
         ),
       ),
+    ),
+      resizeToAvoidBottomInset: false,
     );
   }
 }

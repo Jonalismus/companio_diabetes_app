@@ -48,30 +48,3 @@ class InsulinCalculator {
         .roundToDouble();
   }
 }
-
-
-void main() {
-  double totalUnitsVal = 40;
-  double basalPercentageVal = 0.4;
-  double bolusPercentageVal = 0.6;
-  int mealsPerDayVal = 3;
-  double afterMealTargetGlucoseVal = 90;
-
-  InsulinCalculator insulinCalc = InsulinCalculator(
-      totalUnitsVal,
-      basalPercentageVal,
-      bolusPercentageVal,
-      mealsPerDayVal,
-      afterMealTargetGlucoseVal);
-
-  double currentGlucose = 160;
-  double corrFactor = InsulinCalculator.getCorrectionFactor(
-      totalUnitsVal, true, false);
-  double premealCorrUnits = insulinCalc.getPremealCorrectionUnits(
-      currentGlucose, "rapid", corrFactor);
-  print("Premeal correction units: $premealCorrUnits");
-
-  double carbsIntake = 77; // in gram
-  double afterMealInsulin = insulinCalc.getAfterMealInsulin(carbsIntake, premealCorrUnits);
-  print("After meal insulin needed for 60g carbs: $afterMealInsulin units");
-}

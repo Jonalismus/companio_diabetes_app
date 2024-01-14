@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import '../../utilis/colors_utilis.dart';
+import 'Services/DataAnalysisUtilities.dart';
 import 'Services/GlucoseDataRetriever.dart';
 
 
@@ -16,6 +17,8 @@ class _BloodsugarOverviewState extends State<BloodsugarOverview> {
   List<GlucoseData> weeklyChartData = [];
   List<GlucoseData> chartData = [];
   double bloodSugarValue = 0; // will be retrived from data base or from the user input,if pumpe is not available
+  double minGlucoseValue = 0;
+  double maxGlucoseValue = 0;
 
   @override
   void initState() {
@@ -28,6 +31,9 @@ class _BloodsugarOverviewState extends State<BloodsugarOverview> {
       bloodSugarValue = await GlucoseDataRetriever.readLastGlucoseValue();
       weeklyChartData = await GlucoseDataRetriever.getGlucoseDataLast7Days();
       chartData = await GlucoseDataRetriever.getGlucoseDataForLastDay();
+      var minMaxValues = DataAnalysisUtilities.findMinMaxGlucoseValues(chartData);
+      minGlucoseValue = minMaxValues['min']!;
+      maxGlucoseValue = minMaxValues['max']!;
       setState(() {
       });
     } catch (e) {
@@ -78,7 +84,7 @@ class _BloodsugarOverviewState extends State<BloodsugarOverview> {
       child: Container(
         color: Colors.red[200],
         padding: const EdgeInsets.all(12),
-        child: const Text("A representation of time spent within (green) \nand outside (red) of the normal blood sugar range \n in percentage."),
+        child: const Text("A representation of time spent within (green) \nand outside (red) of the normal blood sugar \nrange in percentage."),
       ),
     );
   }
@@ -138,11 +144,13 @@ class _BloodsugarOverviewState extends State<BloodsugarOverview> {
                   labelStyle: TextStyle(
                     color: Colors.white,
                   ),
+                  minimum: 50,
+                  maximum: 250,
                   plotBands: <PlotBand>[
                     PlotBand(
                       isVisible: true,
                       start: 120,
-                      end: 40,
+                      end: 70,
                       color: Colors.green.withOpacity(0.9),
                     ),
                   ],
@@ -156,13 +164,7 @@ class _BloodsugarOverviewState extends State<BloodsugarOverview> {
                   )
                 ],
               ),
-              const Text('MAX ',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 23,
-                ),
-              ),
-              const Text('MIN ',
+              Text('MAX: $maxGlucoseValue   MIN: $minGlucoseValue',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 23,
