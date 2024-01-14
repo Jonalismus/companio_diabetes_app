@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-
 import '../../utilis/colors_utilis.dart';
+import 'Services/DataAnalysisUtilities.dart';
+import 'Services/GlucoseDataRetriever.dart';
 
-class GlucoseData {
-  GlucoseData(this.year, this.bloodSugarValue);
-  final DateTime year;
-  final double bloodSugarValue;
-}
 
 class BloodsugarOverview extends StatefulWidget {
   @override
@@ -18,20 +14,33 @@ class BloodsugarOverview extends StatefulWidget {
 class _BloodsugarOverviewState extends State<BloodsugarOverview> {
   final GlobalKey _dailyKey = GlobalKey();
   final GlobalKey _weeklyKey = GlobalKey();
+  List<GlucoseData> weeklyChartData = [];
+  List<GlucoseData> chartData = [];
+  double bloodSugarValue = 0; // will be retrived from data base or from the user input,if pumpe is not available
+  double minGlucoseValue = 0;
+  double maxGlucoseValue = 0;
 
-  final List<GlucoseData> chartData = [
-    GlucoseData(DateTime.parse('1969-07-20 20:18:04Z'), 35),
-    GlucoseData(DateTime.parse('1969-07-20 20:23:04Z'), 28),
-    GlucoseData(DateTime.parse('1969-07-20 20:28:04Z'), 34),
-    GlucoseData(DateTime.parse('1969-07-20 20:33:04Z'), 32),
-    GlucoseData(DateTime.parse('1969-07-20 20:38:04Z'), 31),
-    GlucoseData(DateTime.parse('1969-07-20 20:43:04Z'), 29),
-    GlucoseData(DateTime.parse('1969-07-20 20:48:04Z'), 33),
-    GlucoseData(DateTime.parse('1969-07-20 20:53:04Z'), 36),
-    GlucoseData(DateTime.parse('1969-07-20 20:58:04Z'), 38),
-    GlucoseData(DateTime.parse('1969-07-20 21:03:04Z'), 46),
-    GlucoseData(DateTime.parse('1969-07-20 21:08:04Z'), 50)
-  ];
+  @override
+  void initState() {
+    _loadGlyoseData();
+    super.initState();
+  }
+
+  Future<void> _loadGlyoseData() async {
+    try {
+      bloodSugarValue = await GlucoseDataRetriever.readLastGlucoseValue();
+      weeklyChartData = await GlucoseDataRetriever.getGlucoseDataLast7Days();
+      chartData = await GlucoseDataRetriever.getGlucoseDataForLastDay();
+      var minMaxValues = DataAnalysisUtilities.findMinMaxGlucoseValues(chartData);
+      minGlucoseValue = minMaxValues['min']!;
+      maxGlucoseValue = minMaxValues['max']!;
+      setState(() {
+      });
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
 
   double dailyOutOfRangePercentage = 0.7;
   late String dailyRange = (dailyOutOfRangePercentage*100).toString();
@@ -59,7 +68,7 @@ class _BloodsugarOverviewState extends State<BloodsugarOverview> {
     final offset = box.localToGlobal(Offset.zero);
     final entry = OverlayEntry(
       builder: (_) => Positioned(
-        top: offset.dy - 40,
+        top: offset.dy - 30,
         left: offset.dx - 120,
         child: _buildInfo(),
       ),
@@ -75,7 +84,7 @@ class _BloodsugarOverviewState extends State<BloodsugarOverview> {
       child: Container(
         color: Colors.red[200],
         padding: const EdgeInsets.all(12),
-        child: const Text("A representation of time spent within (green) and outside (red) the normal blood sugar range in percentage."),
+        child: const Text("A representation of time spent within (green) \nand outside (red) of the normal blood sugar \nrange in percentage."),
       ),
     );
   }
@@ -83,10 +92,11 @@ class _BloodsugarOverviewState extends State<BloodsugarOverview> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+        appBar: AppBar(
         title: const Text('Blutzucker Overview'),
       ),
-      body: Container(
+      body: SingleChildScrollView(
+      child: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         decoration: BoxDecoration(
@@ -117,7 +127,7 @@ class _BloodsugarOverviewState extends State<BloodsugarOverview> {
                 alignment: Alignment.center,
                 color: Colors.redAccent,
                 child: Text(
-                  '67', // mock for blood sugar value
+                  '$bloodSugarValue',
                   style: TextStyle(
                     fontSize: 90.0,
                     color: Colors.white,
@@ -134,11 +144,13 @@ class _BloodsugarOverviewState extends State<BloodsugarOverview> {
                   labelStyle: TextStyle(
                     color: Colors.white,
                   ),
+                  minimum: 50,
+                  maximum: 250,
                   plotBands: <PlotBand>[
                     PlotBand(
                       isVisible: true,
-                      start: 20,
-                      end: 40,
+                      start: 120,
+                      end: 70,
                       color: Colors.green.withOpacity(0.9),
                     ),
                   ],
@@ -146,19 +158,13 @@ class _BloodsugarOverviewState extends State<BloodsugarOverview> {
                 series: <CartesianSeries>[
                   LineSeries<GlucoseData, DateTime>(
                     dataSource: chartData,
-                    xValueMapper: (GlucoseData bloodSugarValue, _) => bloodSugarValue.year,
-                    yValueMapper: (GlucoseData bloodSugarValue, _) => bloodSugarValue.bloodSugarValue,
+                    xValueMapper: (GlucoseData bloodSugarValue, _) => bloodSugarValue.dateTime,
+                    yValueMapper: (GlucoseData bloodSugarValue, _) => bloodSugarValue.glucoseLevel,
                     color: Colors.red,
                   )
                 ],
               ),
-              const Text('MAX ',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 23,
-                ),
-              ),
-              const Text('MIN ',
+              Text('MAX: $maxGlucoseValue   MIN: $minGlucoseValue',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 23,
@@ -226,6 +232,8 @@ class _BloodsugarOverviewState extends State<BloodsugarOverview> {
           ),
         ),
       ),
+      ),
+      resizeToAvoidBottomInset: false,
     );
   }
 }
