@@ -17,22 +17,27 @@ class FirebaseController {
       DocumentSnapshot docSnapshot = await userDocRef.get();
 
       if (!docSnapshot.exists) {
-        // If the document doesn't exist, create a new one with subcollections
-        await userDocRef.set({
-          'blood_glucose_readings': [],
-          'medication_logs': [],
-          'meal_logs': [],
-          'insulin_recommendations': [],
-        });
-      } else {
-        // If the document exists, update it with the specified fields
-        await userDocRef.update({
-          'blood_glucose_readings': FieldValue.arrayUnion([]),
-          'medication_logs': FieldValue.arrayUnion([]),
-          'meal_logs': FieldValue.arrayUnion([]),
-          'insulin_recommendations': FieldValue.arrayUnion([])
-        });
+        // If the document doesn't exist, create a new one
+        await userDocRef.set({});
       }
+
+      // Check and create subcollections individually
+      await _checkAndCreateSubcollection(userDocRef, 'blood_glucose_readings');
+      await _checkAndCreateSubcollection(userDocRef, 'medication_logs');
+      await _checkAndCreateSubcollection(userDocRef, 'meal_logs');
+      await _checkAndCreateSubcollection(userDocRef, 'insulin_recommendations');
+    }
+  }
+
+  Future<void> _checkAndCreateSubcollection(
+      DocumentReference userDocRef, String subcollectionName) async {
+    CollectionReference subcollectionRef = userDocRef.collection(subcollectionName);
+
+    QuerySnapshot subcollectionSnapshot = await subcollectionRef.get();
+
+    if (subcollectionSnapshot.docs.isEmpty) {
+      // Subcollection doesn't exist, create it
+      await subcollectionRef.add({});
     }
   }
 }
