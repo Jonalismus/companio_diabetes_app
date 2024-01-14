@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../utilis/colors_utilis.dart';
-import 'Services/getLastGlycoseValueFromDatabase.dart';
+import 'Services/GlucoseDataRetriever.dart';
 import 'Services/insulinCalculator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -24,19 +24,19 @@ class _InsulinrechnerState extends State<Insulinrechner> {
   int mealsPerDayVal = 3;
   double afterMealTargetGlucoseVal = 90;
   bool pumpe = true; // Change this value
-  late double bloodSugarValue; // will be retrived from data base or from the user input,if pumpe is not available
+  late double bloodSugarValue = 0; // will be retrived from data base or from the user input,if pumpe is not available
   late double carbohydrates;
   late double insulinUnits = 0;
 
   @override
   void initState() {
+    _loadGlyoseData();
     super.initState();
-    _loadData();
   }
 
-  Future<void> _loadData() async {
+  Future<void> _loadGlyoseData() async {
     try {
-      bloodSugarValue = await readLastGlucoseValue();
+      bloodSugarValue = await GlucoseDataRetriever.readLastGlucoseValue();
       setState(() {
       });
     } catch (e) {
