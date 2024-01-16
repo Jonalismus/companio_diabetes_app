@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../profilScreen.dart';
 import 'FeedbackScreen.dart';
 import 'Services/DiabetesEducationPage.dart';
-
+import 'package:companio_diabetes_app/datenbank/BloodSugarManager.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -13,6 +13,7 @@ class SettingsPage extends StatefulWidget {
 
 class SettingsPageState extends State<SettingsPage> {
   void _logout() {
+    BloodSugarManager.instance.stopSimulation();
     Navigator.of(context).popUntil((route) => route.isFirst);
   }
 

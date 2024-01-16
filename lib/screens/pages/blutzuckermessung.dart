@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../../utilis/colors_utilis.dart';
+
 class BlutzuckermessungPage extends StatefulWidget {
   const BlutzuckermessungPage({Key? key}) : super(key: key);
 
@@ -21,7 +23,14 @@ class _BlutzuckermessungPageState extends State<BlutzuckermessungPage> {
       return;
     }
 
-    double bloodSugarValue = double.tryParse(_controller.text) ?? 0;
+    double? bloodSugarValue = double.tryParse(_controller.text);
+
+    if (bloodSugarValue == null) {
+      setState(() {
+        _warningMessage = 'Ungültige Eingabe. Bitte geben Sie eine numerische Wert ein.';
+      });
+      return;
+    }
 
     if (bloodSugarValue < 50) {
       setState(() {
@@ -61,32 +70,56 @@ class _BlutzuckermessungPageState extends State<BlutzuckermessungPage> {
       appBar: AppBar(
         title: const Text('Blutzuckermessung'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(
-              controller: _controller,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
-              decoration: const InputDecoration(
-                labelText: 'Blutwert (mg/dl)',
+      body: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              hexStringToColor("#3158C3"),
+              hexStringToColor("#3184C3"),
+              hexStringToColor("#551CB4")
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextField(
+                controller: _controller,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                decoration: const InputDecoration(
+                  labelText: 'Blutwert (mg/dl)',
+                  labelStyle: TextStyle(color: Colors.white), // Textfarbe ändern
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _checkBloodSugar,
-              child: const Text('Blutwert überprüfen'),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              _warningMessage,
-              style: const TextStyle(
-                color: Colors.red,
-                fontSize: 16,
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: _checkBloodSugar,
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.white, // Hintergrundfarbe des Buttons ändern
+                  onPrimary: Colors.black, // Textfarbe des Buttons ändern
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  minimumSize: Size(double.infinity, 60.0),
+                ),
+                child: const Text('Blutwert überprüfen'),
               ),
-            ),
-          ],
+              const SizedBox(height: 16),
+              Text(
+                _warningMessage,
+                style: const TextStyle(
+                  color: Colors.red,
+                  fontSize: 30,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
