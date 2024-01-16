@@ -136,12 +136,12 @@ class _SugarIntakeOverviewState extends State<SugarIntakeOverview> {
             Padding(
               padding: const EdgeInsets.only(top: 16.0),
               child: Text(
-                "Diese Tabelle zeigt Ihre tägliche Zuckeraufnahme. Der grüne Bereich markiert den empfohlenen Wertebereich. "
-                    "Ein Erwachsener mit moderater Aktivität, der täglich 2000-2500 Kalorien benötigt, sollte 45%-65% dieser Kalorien in Form von Kohlenhydraten zu sich nehmen. "
-                    "Dies entspricht ungefähr 281-406 Gramm Kohlenhydraten pro Tag.",
-                textAlign: TextAlign.center,
+                "Diese Tabelle zeigt Ihre tägliche Zuckeraufnahme. Der grüne Bereich markiert den sinnvollen Wertebereich.",
+                    // "Ein Erwachsener mit moderater Aktivität, der täglich 2000-2500 Kalorien benötigt, sollte 45%-65% dieser Kalorien in Form von Kohlenhydraten zu sich nehmen. "
+                    // "Dies entspricht ungefähr 281-406 Gramm Kohlenhydraten pro Tag.",
+                textAlign: TextAlign.left,
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 15,
                   color: Colors.grey[600],
                 ),
               ),
