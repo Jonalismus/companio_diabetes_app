@@ -115,11 +115,11 @@ class _SugarIntakeOverviewState extends State<SugarIntakeOverview> {
                 plotBands: <PlotBand>[
                   PlotBand(
                     isVisible: true,
-                    start: 15,
-                    end: 15,
-                    color: Colors.red,
+                    start: 281,
+                    end: 406,
+                    color: Colors.green,
                     borderWidth: 2,
-                    borderColor: Colors.red,
+                    borderColor: Colors.green,
                   ),
                 ],
               ),
@@ -129,13 +129,16 @@ class _SugarIntakeOverviewState extends State<SugarIntakeOverview> {
                   xValueMapper: (SugarIntakeData data, _) => data.date,
                   yValueMapper: (SugarIntakeData data, _) => data.totalSugarIntake,
                   borderRadius: BorderRadius.all(Radius.circular(10)),
+                  color: Colors.red
                 ),
               ],
             ),
             Padding(
               padding: const EdgeInsets.only(top: 16.0),
               child: Text(
-                "Diese Tabelle zeigt Ihre tägliche Zuckeraufnahme. Die rote Linie stellt die empfohlene Obergrenze der täglichen Zuckeraufnahme für Sie dar.",
+                "Diese Tabelle zeigt Ihre tägliche Zuckeraufnahme. Der grüne Bereich markiert den empfohlenen Wertebereich. "
+                    "Ein Erwachsener mit moderater Aktivität, der täglich 2000-2500 Kalorien benötigt, sollte 45%-65% dieser Kalorien in Form von Kohlenhydraten zu sich nehmen. "
+                    "Dies entspricht ungefähr 281-406 Gramm Kohlenhydraten pro Tag.",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 16,

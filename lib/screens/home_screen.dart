@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:companio_diabetes_app/screens/pages/Insulinrechner.dart';
+import 'package:companio_diabetes_app/screens/pages/sugarIntakeOverview.dart';
 import 'package:companio_diabetes_app/screens/pages/blutzuckermessung.dart';
 import 'package:companio_diabetes_app/screens/pages/bloodsugar_overview_dashboard.dart';
 import 'package:companio_diabetes_app/screens/pages/fooddairy.dart';
@@ -10,6 +11,8 @@ import 'package:companio_diabetes_app/datenbank/firestore_controller.dart';
 import 'package:companio_diabetes_app/screens/pages/notificationSettings.dart';
 import 'package:companio_diabetes_app/screens/pages/settings.dart';
 import 'package:companio_diabetes_app/datenbank/BloodSugarManager.dart';
+import 'package:provider/provider.dart';
+import '../utilis/dao/loadData.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -67,6 +70,17 @@ class HomeScreenState extends State<HomeScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const StepCounterPage()),
+    );
+  }
+
+  void _navigateToSugarIntakeOverviewPage(){
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>  ChangeNotifierProvider(
+            create: (context) => DataProvider()..loadData(),
+            child: SugarIntakeOverview(),
+          ),)
     );
   }
 
@@ -212,6 +226,22 @@ class HomeScreenState extends State<HomeScreen> {
                   ),
                   child: const Text(
                     'Schrittzähler',
+                    style: TextStyle(fontSize: 18.0),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                ElevatedButton(
+                  onPressed: _navigateToSugarIntakeOverviewPage,
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.white,
+                    onPrimary: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    minimumSize: Size(double.infinity, 60.0),
+                  ),
+                  child: const Text(
+                    'Zuckeraufnahmenübersicht',
                     style: TextStyle(fontSize: 18.0),
                   ),
                 ),
