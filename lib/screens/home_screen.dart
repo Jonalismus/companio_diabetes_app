@@ -28,7 +28,8 @@ class HomeScreenState extends State<HomeScreen> {
   final List<Widget> _pages = [
     const NotfallplanPage(),
     const HomePage(),
-    const FoodDairyPage(),
+    // const FoodDairyPage(),
+    const SettingsPage(),
   ];
 
   @override
@@ -56,13 +57,6 @@ class HomeScreenState extends State<HomeScreen> {
           title: '',
         ),
       ),
-    );
-  }
-
-  void _navigateToSettings() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const SettingsPage()),
     );
   }
 
@@ -96,14 +90,6 @@ class HomeScreenState extends State<HomeScreen> {
       ),
       appBar: AppBar(
         title: const Text('Companio'),
-        actions: [
-          Align(
-            child: IconButton(
-              icon: const Icon(Icons.settings),
-              onPressed: _navigateToSettings,
-            ),
-          ),
-        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
@@ -116,8 +102,8 @@ class HomeScreenState extends State<HomeScreen> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.food_bank),
-            label: 'Ernährungstagebuch',
+            icon: Icon(Icons.settings),
+            label: 'Einstellungen',
           ),
         ],
         currentIndex: _selectedIndex,
@@ -241,7 +227,7 @@ class HomeScreenState extends State<HomeScreen> {
                     minimumSize: Size(double.infinity, 60.0),
                   ),
                   child: const Text(
-                    'Zuckeraufnahmenübersicht',
+                    'Kohlenhydrataufnahmenübersicht',
                     style: TextStyle(fontSize: 18.0),
                   ),
                 ),
