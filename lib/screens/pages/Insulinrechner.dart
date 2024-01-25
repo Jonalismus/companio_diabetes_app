@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import '../../utilis/colors_utilis.dart';
 import 'Services/GlucoseDataRetriever.dart';
@@ -26,11 +28,14 @@ class _InsulinrechnerState extends State<Insulinrechner> {
   bool pumpe = true; // Change this value
   late double bloodSugarValue = 0; // will be retrived from data base or from the user input,if pumpe is not available
   late double carbohydrates;
-  late double insulinUnits = 0;
+  late double insulinUnits = -1;
 
   @override
   void initState() {
     _loadGlyoseData();
+    Timer.periodic(Duration(seconds: 60), (timer) {
+      _loadGlyoseData();
+    });
     super.initState();
   }
 
@@ -81,6 +86,59 @@ class _InsulinrechnerState extends State<Insulinrechner> {
       return;
     } else {
       carbohydrates = double.tryParse(_controllerCarbohydrates.text) ?? 0;
+    }
+  }
+
+  Future<void> _calculateInsulinAndShowPopup() async {
+    _checkCarbohydrates();
+    insulinUnits = calculateInsulinBedarf(bloodSugarValue, carbohydrates);
+
+    if (insulinUnits == 0) {
+      await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Information'),
+            content: Text('Insulinbedarf beträgt 0 Units. Bitte überprüfen Sie Ihre Eingaben.'),
+            backgroundColor: Colors.lightBlue,
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      setState(() {
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const Text(
+                'Benötigte Insulin Units: ',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 22,
+                ),
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width * 0.7,
+                alignment: Alignment.center,
+                color: Colors.indigo,
+                child: Text(
+                  '$insulinUnits',
+                  style: TextStyle(
+                    fontSize: 90.0,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          );
+        });
     }
   }
 
@@ -194,36 +252,8 @@ class _InsulinrechnerState extends State<Insulinrechner> {
                   const SizedBox(height: 10),
                   ElevatedButton(
                     onPressed: () {
+                      _calculateInsulinAndShowPopup();
                       FocusScope.of(context).unfocus();
-                      _checkCarbohydrates();
-                      insulinUnits = calculateInsulinBedarf(
-                          bloodSugarValue, carbohydrates);
-                      setState(() {
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Benötigte Insulin Units: ',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 22,
-                              ),
-                            ),
-                            Container(
-                              width: MediaQuery.of(context).size.width * 0.7,
-                              alignment: Alignment.center,
-                              color: Colors.indigo,
-                              child: Text(
-                                '$insulinUnits', // mock for blood sugar value
-                                style: TextStyle(
-                                  fontSize: 90.0,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      });
                     },
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.white,
@@ -242,7 +272,7 @@ class _InsulinrechnerState extends State<Insulinrechner> {
                   const SizedBox(height: 1),
                 ],
               ),
-              if (insulinUnits > 0)
+              if (insulinUnits >= 0)
                 Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
