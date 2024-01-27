@@ -57,13 +57,13 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
               TextField(
                 controller: _feedbackController,
                 maxLines: 5,
-                style: TextStyle(color: Colors.white), // Schriftfarbe
+                style: TextStyle(color: Colors.white),
                 decoration: InputDecoration(
                   hintText: 'Geben Sie hier Ihr Feedback ein',
                   border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white), // Randfarbe
+                    borderSide: BorderSide(color: Colors.white),
                   ),
-                  hintStyle: TextStyle(color: Colors.white), // Farbe des Hinweistexts
+                  hintStyle: TextStyle(color: Colors.white),
                 ),
               ),
               SizedBox(height: 16.0),
