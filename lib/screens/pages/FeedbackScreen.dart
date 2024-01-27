@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../utilis/colors_utilis.dart';
+
 class FeedbackScreen extends StatefulWidget {
   const FeedbackScreen({Key? key}) : super(key: key);
 
@@ -33,24 +35,52 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
       appBar: AppBar(
         title: const Text('Feedback'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextField(
-              controller: _feedbackController,
-              maxLines: 5,
-              decoration: InputDecoration(
-                hintText: 'Geben Sie hier Ihr Feedback ein',
-                border: OutlineInputBorder(),
+      body: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              hexStringToColor("#3158C3"),
+              hexStringToColor("#3184C3"),
+              hexStringToColor("#551CB4"),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextField(
+                controller: _feedbackController,
+                maxLines: 5,
+                style: TextStyle(color: Colors.white), // Schriftfarbe
+                decoration: InputDecoration(
+                  hintText: 'Geben Sie hier Ihr Feedback ein',
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white), // Randfarbe
+                  ),
+                  hintStyle: TextStyle(color: Colors.white), // Farbe des Hinweistexts
+                ),
               ),
-            ),
-            ElevatedButton(
-              onPressed: _sendFeedback,
-              child: const Text('Feedback senden'),
-            ),
-          ],
+              SizedBox(height: 16.0),
+              ElevatedButton(
+                onPressed: _sendFeedback,
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.white,
+                  onPrimary: Colors.black,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  minimumSize: Size(double.infinity, 60.0),
+                ),
+                child: const Text('Feedback senden'),
+              ),
+            ],
+          ),
         ),
       ),
     );
