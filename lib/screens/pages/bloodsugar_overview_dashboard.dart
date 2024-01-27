@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -12,6 +14,7 @@ class BloodsugarOverview extends StatefulWidget {
 }
 
 class _BloodsugarOverviewState extends State<BloodsugarOverview> {
+  late Timer _timer;
   final GlobalKey _dailyKey = GlobalKey();
   final GlobalKey _weeklyKey = GlobalKey();
   List<GlucoseData> weeklyChartData = [];
@@ -20,9 +23,18 @@ class _BloodsugarOverviewState extends State<BloodsugarOverview> {
   double minGlucoseValue = 0;
   double maxGlucoseValue = 0;
 
+  double dailyInRangePercentage = 0;
+  double weeklyInRangePercentage = 0;
+
+  late String dailyRange = "0";
+  late String weeklyRange = "0";
+
   @override
   void initState() {
     _loadGlyoseData();
+    _timer = Timer.periodic(Duration(seconds: 57), (timer) {
+      _loadGlyoseData();
+    });
     super.initState();
   }
 
@@ -34,18 +46,15 @@ class _BloodsugarOverviewState extends State<BloodsugarOverview> {
       var minMaxValues = DataAnalysisUtilities.findMinMaxGlucoseValues(chartData);
       minGlucoseValue = minMaxValues['min']!;
       maxGlucoseValue = minMaxValues['max']!;
-      setState(() {
-      });
+      dailyInRangePercentage = DataAnalysisUtilities.calculateNormalRangePercentage(chartData);
+      weeklyInRangePercentage = DataAnalysisUtilities.calculateNormalRangePercentage(weeklyChartData);
+      dailyRange = (dailyInRangePercentage*100).toString();
+      weeklyRange = (weeklyInRangePercentage*100).toString();
+      setState(() {});
     } catch (e) {
       print('Error: $e');
     }
   }
-
-
-  double dailyOutOfRangePercentage = 0.7;
-  late String dailyRange = (dailyOutOfRangePercentage*100).toString();
-  double weeklyOutOfRangePercentage = 0.85;
-  late String weeklyRange = (weeklyOutOfRangePercentage*100).toString();
 
   void _showDailyOverlay(context) async {
     final box = _dailyKey.currentContext?.findRenderObject() as RenderBox;
@@ -150,7 +159,7 @@ class _BloodsugarOverviewState extends State<BloodsugarOverview> {
                     PlotBand(
                       isVisible: true,
                       start: 120,
-                      end: 70,
+                      end: 55,
                       color: Colors.green.withOpacity(0.9),
                     ),
                   ],
@@ -187,7 +196,7 @@ class _BloodsugarOverviewState extends State<BloodsugarOverview> {
                 ],
               ),
               GFProgressBar(
-                percentage: dailyOutOfRangePercentage,
+                percentage: dailyInRangePercentage,
                 lineHeight: 30,
                 alignment: MainAxisAlignment.spaceBetween,
                 leading  : const Icon( Icons.sentiment_dissatisfied, color: Colors.red),
@@ -216,7 +225,7 @@ class _BloodsugarOverviewState extends State<BloodsugarOverview> {
                 ],
               ),
               GFProgressBar(
-                percentage: weeklyOutOfRangePercentage,
+                percentage: weeklyInRangePercentage,
                 lineHeight: 30,
                 alignment: MainAxisAlignment.spaceBetween,
                 leading  : const Icon( Icons.sentiment_dissatisfied, color: Colors.red),

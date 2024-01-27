@@ -22,6 +22,19 @@ class DataAnalysisUtilities {
     return {'min': minGlucose, 'max': maxGlucose};
   }
 
-  //TODO: make a function that receives a list of a type List<GlucoseData>
-// and calculates percentage of being in normal range and outside of a normal range
+
+// and calculates percentage of being in normal range
+  static double calculateNormalRangePercentage(List<GlucoseData> glucoseDataList) {
+    int normalRangeCount = 0;
+
+    for (GlucoseData data in glucoseDataList) {
+      if (data.glucoseLevel >= 45 && data.glucoseLevel <= 120) {
+        normalRangeCount++;
+      }
+    }
+
+    double percentage = normalRangeCount / glucoseDataList.length;
+    var result = double.parse(percentage.toStringAsFixed(3));
+    return result;
+  }
 }

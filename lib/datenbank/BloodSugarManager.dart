@@ -1,10 +1,6 @@
 import 'dart:async';
-import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'dart:convert';
-import 'dart:io';
-import 'package:csv/csv.dart';
 
 class BloodSugarManager {
   late Timer _timer;
@@ -20,34 +16,29 @@ class BloodSugarManager {
   // Getter for the singleton instance
   static BloodSugarManager get instance => _instance;
 
-  void startSimulation() async {
+  void startSimulation() {
     if (!_isRunning) {
-      User? currentUser = _auth.currentUser;
+      _timer = Timer.periodic(Duration(seconds: 60), (Timer timer) async {
+        User? currentUser = _auth.currentUser;
 
-      if (currentUser != null) {
-        String csvContent = await File('/simdata/dummydata.csv').readAsString();
-        List<List<dynamic>> csvList = CsvToListConverter().convert(csvContent);
-
-        _timer = Timer.periodic(Duration(minutes: 5), (Timer timer) async {
-          int randomRowIndex = Random().nextInt(csvList.length);
-
-          double glucoseValue = csvList[randomRowIndex][7];
-
+        if (currentUser != null) {
           CollectionReference readingsCollection = FirebaseFirestore.instance
               .collection('users')
               .doc(currentUser.uid)
               .collection('blood_glucose_readings');
 
+          double randomBloodSugarValue = 50 + (200 * (DateTime.now().microsecondsSinceEpoch % 1000) / 1000);
+
           await readingsCollection.add({
-            'glucose_level': glucoseValue,
+            'glucose_level': randomBloodSugarValue,
             'date_time': Timestamp.now(),
           });
 
-          print('Simulated Blood Sugar Value: $glucoseValue');
-        });
+          print('Simulated Blood Sugar Value: $randomBloodSugarValue');
+        }
+      });
 
-        _isRunning = true;
-      }
+      _isRunning = true;
     }
   }
 
