@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../utilis/colors_utilis.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -60,7 +61,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blueGrey,
       appBar: AppBar(
         title: Text("Profile Screen"),
         backgroundColor: Colors.blue,
@@ -73,30 +73,61 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ],
       ),
-      body: ListView(
-        padding: EdgeInsets.all(16.0),
-        children: [
-          TextField(
-            controller: nameController,
-            decoration: InputDecoration(labelText: 'Name'),
+      body: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              hexStringToColor("#3158C3"),
+              hexStringToColor("#3184C3"),
+              hexStringToColor("#551CB4"),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
-          SizedBox(height: 16.0),
-          TextField(
-            controller: ageController,
-            decoration: InputDecoration(labelText: 'Age'),
-          ),
-          SizedBox(height: 16.0),
-          TextField(
-            controller: genderController,
-            decoration: InputDecoration(labelText: 'Gender'),
-          ),
-          SizedBox(height: 16.0),
-          TextField(
-            controller: bmiController,
-            decoration: InputDecoration(labelText: 'BMI'),
-            keyboardType: TextInputType.number,
-          ),
-        ],
+        ),
+        child: ListView(
+          padding: EdgeInsets.all(16.0),
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: InputDecoration(
+                labelText: 'Name',
+                filled: true,
+                fillColor: Colors.white,
+              ),
+            ),
+            SizedBox(height: 16.0),
+            TextField(
+              controller: ageController,
+              decoration: InputDecoration(
+                labelText: 'Age',
+                filled: true,
+                fillColor: Colors.white,
+              ),
+            ),
+            SizedBox(height: 16.0),
+            TextField(
+              controller: genderController,
+              decoration: InputDecoration(
+                labelText: 'Gender',
+                filled: true,
+                fillColor: Colors.white,
+              ),
+            ),
+            SizedBox(height: 16.0),
+            TextField(
+              controller: bmiController,
+              decoration: InputDecoration(
+                labelText: 'BMI',
+                filled: true,
+                fillColor: Colors.white,
+              ),
+              keyboardType: TextInputType.number,
+            ),
+          ],
+        ),
       ),
     );
   }
