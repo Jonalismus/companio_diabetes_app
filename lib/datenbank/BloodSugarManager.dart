@@ -52,9 +52,12 @@ class BloodSugarManager {
   }
 
   void stopSimulation() {
-    _timer.cancel();
+    if (_isRunning && _timer != null && _timer.isActive) {
+      _timer.cancel();
+    }
     _isRunning = false;
   }
+
 
   bool get isRunning => _isRunning;
 }

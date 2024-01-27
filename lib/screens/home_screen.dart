@@ -80,36 +80,42 @@ class HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Stack(
-          children: [
-            _pages[_selectedIndex],
-          ],
+    return WillPopScope(
+      onWillPop: () async {
+        // Verhindere das Zurückgehen
+        return false;
+      },
+      child: Scaffold(
+        body: Center(
+          child: Stack(
+            children: [
+              _pages[_selectedIndex],
+            ],
+          ),
         ),
-      ),
-      appBar: AppBar(
-        title: const Text('Companio'),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.medical_services),
-            label: 'Notfallplan',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Einstellungen',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blue,
-        onTap: _onItemTapped,
-      ),
+        appBar: AppBar(
+          automaticallyImplyLeading: false, // Setze diese Eigenschaft auf false
+          title: const Text('Companio'),
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.medical_services),
+              label: 'Notfallplan',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.settings),
+              label: 'Einstellungen',
+            ),
+          ],
+          currentIndex: _selectedIndex,
+          selectedItemColor: Colors.blue,
+          onTap: _onItemTapped,
+        ),
       floatingActionButton: _selectedIndex == 2 || _selectedIndex == 0
           ? null
           : Padding(
@@ -236,6 +242,7 @@ class HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
+    ),
     );
   }
 }

@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../utilis/colors_utilis.dart';
 import '../profilScreen.dart';
+import '../signin_screen.dart';
 import 'FeedbackScreen.dart';
 import 'Services/DiabetesEducationPage.dart';
 import 'package:companio_diabetes_app/datenbank/BloodSugarManager.dart';
@@ -16,6 +18,9 @@ class SettingsPageState extends State<SettingsPage> {
   void _logout() {
     BloodSugarManager.instance.stopSimulation();
     Navigator.of(context).popUntil((route) => route.isFirst);
+    FirebaseAuth.instance.signOut().then((value){
+      Navigator.push(context, MaterialPageRoute(builder: (context) => SignInScreen()));
+    });
   }
 
   void _navigateToProfile() {
