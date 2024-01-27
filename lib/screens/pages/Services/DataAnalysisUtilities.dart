@@ -34,6 +34,7 @@ class DataAnalysisUtilities {
     }
 
     double percentage = normalRangeCount / glucoseDataList.length;
-    return double.parse(percentage.toStringAsFixed(3));
+    var result = double.parse(percentage.toStringAsFixed(3));
+    return result;
   }
 }

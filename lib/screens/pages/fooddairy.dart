@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:companio_diabetes_app/screens/pages/sugarIntakeOverview.dart';
 import 'package:companio_diabetes_app/utilis/dao/loadData.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -93,7 +94,7 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
   Future<String> scanBarcode() async {
     String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
       '#ff6666',
-      'Cancel',
+      'Abbrechen',
       true,
       ScanMode.BARCODE,
     );
@@ -116,7 +117,7 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Barcode Input'),
+          title: const Text('Barcode eingeben'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
@@ -129,11 +130,11 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
                     barcodeInputDialogController.text = _barcodeController.text;
                   });
                 },
-                child: const Text('Scan Barcode'),
+                child: const Text('Barcode scannen'),
               ),
               TextField(
                 controller: barcodeInputDialogController,
-                decoration: const InputDecoration(labelText: 'Enter Barcode'),
+                decoration: const InputDecoration(labelText: 'Barcode eingeben'),
                 keyboardType: TextInputType.number,
               ),
             ],
@@ -147,7 +148,7 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('Cancel'),
+              child: const Text('Abbrechen'),
             ),
             TextButton(
               style: ElevatedButton.styleFrom(
@@ -161,7 +162,7 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
                 });
                 Navigator.of(context).pop();
               },
-              child: const Text('Confirm'),
+              child: const Text('Bestätigen'),
             ),
           ],
         );
@@ -221,8 +222,8 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
       });
       setState(() {});
     } else if (pickedTime != null) {
-      _showWarningDialog("Invalid Time",
-          "You cannot select a time later than the current time.");
+      _showWarningDialog("Ungültige Zeitangabe",
+          "Sie können keinen späteren Zeitpunkt als den aktuellen Zeitpunkt auswählen.");
     }
   }
 
@@ -298,13 +299,8 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
   void _submitEntry() async {
     if (_foodItems.isEmpty) {
       _showWarningDialog(
-          'Error', 'Cannot add a meal entry with no food items.');
+          'Fehler', 'Ohne Lebensmittel kann kein Mahlzeiteintrag hinzugefügt werden.');
       return;
-    }
-
-    // Print each food item
-    for (FoodItem foodItem in _foodItems) {
-      print('Food Name: ${foodItem.name}, Quantity: ${foodItem.quantity}');
     }
 
     // You can save the information to a database or perform other processing
@@ -331,11 +327,6 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
   }
 
   void _cancelSubmitEntry() {
-    // Print each food item
-    for (FoodItem foodItem in _foodItems) {
-      print('Food Name: ${foodItem.name}, Quantity: ${foodItem.quantity}');
-    }
-
     // Clear input fields and food items list
     _foodNameController.clear();
     _foodQuantityController.clear();
@@ -351,13 +342,13 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
 
   void _addFoodItem() {
     if (_foodNameController.text.isEmpty) {
-      _showWarningDialog('Error', 'Please enter a food name.');
+      _showWarningDialog('Fehler', 'Bitte geben Sie einen Lebensmittelnamen ein.');
       return;
     }
 
     double? quantity = double.tryParse(_foodQuantityController.text);
     if (quantity == null || quantity <= 0) {
-      _showWarningDialog('Error', 'Please enter a valid quantity.');
+      _showWarningDialog('Fehler', 'Bitte geben Sie eine gültige Menge ein.');
       return;
     }
 
@@ -390,7 +381,7 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
               },
             ),
             Text(
-              'Date: ${DateFormat('yyyy-MM-dd').format(_selectedDateTime)}',
+              '${DateFormat('yyyy-MM-dd').format(_selectedDateTime)}',
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             IconButton(
@@ -424,24 +415,24 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
     bool isEditingThisEntry = _editingMealEntryUuid == mealEntry.uuid;
     Icon actionIcon = isEditingThisEntry ? const Icon(Icons.cancel) : const Icon(Icons.add);
     return ExpansionTile(
-      title: Text('Meal at ${DateFormat('HH:mm').format(mealEntry.dateTime)}'),
+      title: Text('Mahlzeit um ${DateFormat('HH:mm').format(mealEntry.dateTime)}'),
       children: [
         ...mealEntry.foodItems
             .map((item) => Row(
                   children: [
                     Expanded(
-                      flex: 3,
+                      flex: 2,
                       child: TextFormField(
                         controller: TextEditingController(text: item.name),
                         readOnly: true,
                       ),
                     ),
                     Expanded(
-                      flex: 2,
+                      flex: 3,
                       child: TextFormField(
                         controller: TextEditingController(
                             text:
-                                '${item.carbohydrate_100g.toStringAsFixed(2)} g/100g(ml)'),
+                                '${item.carbohydrate_100g.toString()}g/100g(ml)'),
                         readOnly: true,
                       ),
                     ),
@@ -449,7 +440,7 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
                       flex: 2,
                       child: TextFormField(
                         controller: TextEditingController(
-                            text: '${item.quantity.toString()} g(ml)'),
+                            text: '${item.quantity.toString()}g(ml)'),
                         readOnly: true,
                       ),
                     ),
@@ -465,10 +456,10 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
                                 mealEntry);
                           });
                         },
-                            "Delete Food Item",
-                            "Are you sure you want to delete this food item?",
-                            "Cancel",
-                            "Delete");
+                            "Lebensmittel löschen",
+                            "Sind Sie sicher, dass Sie dieses Lebensmittel löschen möchten?",
+                            "Abbrechen",
+                            "Löschen");
                       },
                     ),
                   ],
@@ -478,18 +469,18 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
           Row(
             children: [
               Expanded(
-                flex: 3,
+                flex: 2,
                 child: TextFormField(
                   controller: _foodNameController,
-                  decoration: const InputDecoration(labelText: 'Food Name'),
+                  decoration: const InputDecoration(labelText: 'Lebensmittelname'),
                 ),
               ),
               Expanded(
-                flex: 2,
+                flex: 3,
                 child: TextFormField(
                   controller: _foodCarbsController,
                   decoration: const InputDecoration(
-                      labelText: 'Carbohydrates per 100g(ml)'),
+                      labelText: 'Kohlenhydrate /100g(ml)'),
                   keyboardType: TextInputType.number,
                 ),
               ),
@@ -498,7 +489,7 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
                 child: TextFormField(
                   controller: _foodQuantityController,
                   decoration: const InputDecoration(
-                      labelText: 'Quantity (unit: g or ml)'),
+                      labelText: 'Menge(g,ml)'),
                   keyboardType: TextInputType.number,
                 ),
               ),
@@ -539,10 +530,10 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
                         FirebaseAuth.instance.currentUser!.uid, mealEntry.uuid);
                   });
                 },
-                    "Delete Meal Entry",
-                    "Are you sure you want to delete this meal entry?",
-                    "Cancel",
-                    "Delete");
+                    "Mahlzeiteintrag löschen",
+                    "Sind Sie sicher, dass Sie diesen Mahlzeiteintrag löschen möchten?",
+                    "Abbrechen",
+                    "Löschen");
               },
             ),
           ],
@@ -561,6 +552,15 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
     _mealEntries = dataProvider.mealEntries;
 
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Ernährungstagebuch'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context, _mealEntries);
+          },
+        ),
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child:
@@ -583,7 +583,7 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
             return StatefulBuilder(
               builder: (context, setState) {
                 return AlertDialog(
-                  title: const Text('Add Meal Log'),
+                  title: const Text('Mahlzeit eintragen'),
                   content: _buildAddMealLogDialogContent(setState),
                   actions: _buildAddMealLogDialogActions(),
                 );
@@ -604,7 +604,7 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
           foregroundColor: Colors.white,
           backgroundColor: Colors.pink,
         ),
-        child: const Text('Cancel'),
+        child: const Text('Abbrechen'),
       ),
       ElevatedButton(
         onPressed: _submitEntry,
@@ -612,7 +612,7 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
           foregroundColor: Colors.white,
           backgroundColor: Colors.blue,
         ),
-        child: const Text('Submit'),
+        child: const Text('Abgeben'),
       ),
     ];
   }
@@ -665,7 +665,7 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
             children: [
               const Tooltip(
                 message:
-                    'Click to enter or scan a barcode. If the food has no barcode, please visit https://fddb.info/ for its info.',
+                    'Klicken Sie hier, um einen Barcode einzugeben oder zu scannen. Wenn das Lebensmittel keinen Barcode hat, besuchen Sie bitte https://fddb.info/ für dessen Informationen.',
                 child: Text('Barcode'),
               ),
               IconButton(
@@ -676,18 +676,18 @@ class _FoodDairyPageState extends State<FoodDairyPage> {
           ),
           TextFormField(
             controller: _foodNameController,
-            decoration: const InputDecoration(labelText: 'Food Name'),
+            decoration: const InputDecoration(labelText: 'Lebensmittelname'),
           ),
           TextFormField(
             controller: _foodCarbsController,
             decoration:
-                const InputDecoration(labelText: 'Carbohydrates per 100g(ml)'),
+                const InputDecoration(labelText: 'Kohlenhydrate pro 100g(ml)'),
             keyboardType: TextInputType.number,
           ),
           TextFormField(
             controller: _foodQuantityController,
             decoration:
-                const InputDecoration(labelText: 'Quantity (unit: g or ml)'),
+                const InputDecoration(labelText: 'Menge(g, ml)'),
             keyboardType: TextInputType.number,
           ),
           IconButton(
