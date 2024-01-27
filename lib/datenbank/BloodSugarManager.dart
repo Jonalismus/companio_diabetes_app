@@ -18,7 +18,7 @@ class BloodSugarManager {
 
   void startSimulation() {
     if (!_isRunning) {
-      _timer = Timer.periodic(Duration(seconds: 60), (Timer timer) async {
+      _timer = Timer.periodic(Duration(seconds: 120), (Timer timer) async {
         User? currentUser = _auth.currentUser;
 
         if (currentUser != null) {
