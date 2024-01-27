@@ -13,23 +13,56 @@ class StepCounterPage extends StatefulWidget {
 }
 
 class _StepCounterPageState extends State<StepCounterPage> {
+
   late Stream<StepCount> _stepCountStream;
   late Stream<PedestrianStatus> _pedestrianStatusStream;
+  late StreamController<int> _resetStepsController;
+  late StreamSubscription<int> _resetStepsSubscription;
+
   String _status = '?', _steps = '?';
+
   final NotificationService _notificationService = NotificationService();
+
+  int _lastStepCount = 0;
+  DateTime _lastStepTime = DateTime.now();
 
   @override
   void initState() {
     super.initState();
     initPlatformState();
     _notificationService.initNotification();
+    _setupResetTimer();
   }
 
-  Future<void> checkSteps(int stepCount) async {
-    if (stepCount >= 32140 && stepCount <= 32150) {
-      await showNotification();
+  void _setupResetTimer() {
+    Timer.periodic(Duration(days: 1), (Timer timer) {
+      _resetSteps();
+    });
+
+    DateTime now = DateTime.now();
+    DateTime midnight = DateTime(now.year, now.month, now.day, 0, 0, 0, 0);
+    Duration timeUntilMidnight = midnight.difference(now);
+
+    if (timeUntilMidnight.inMilliseconds > 0) {
+      Timer(Duration(milliseconds: timeUntilMidnight.inMilliseconds), _resetSteps);
     }
   }
+
+  void _resetSteps() {
+    setState(() {
+      _steps = '0';
+    });
+    _lastStepCount = 0;
+    _lastStepTime = DateTime.now();
+  }
+
+  @override
+  void dispose() {
+    _resetStepsController.close();
+    _resetStepsSubscription.cancel();
+    super.dispose();
+  }
+
 
   Future<void> showNotification() async {
     print('show notification');
@@ -42,8 +75,16 @@ class _StepCounterPageState extends State<StepCounterPage> {
   void onStepCount(StepCount event) {
     print(event);
     setState(() {
-      _steps = event.steps.toString();
-      checkSteps(event.steps);
+      int currentSteps = event.steps;
+      _steps = currentSteps.toString();
+
+      if (currentSteps - _lastStepCount >= 5000 &&
+          DateTime.now().difference(_lastStepTime).inMinutes <= 30) {
+        showNotification();
+      }
+
+      _lastStepCount = currentSteps;
+      _lastStepTime = DateTime.now();
     });
   }
 
