@@ -32,7 +32,7 @@ class _BloodsugarOverviewState extends State<BloodsugarOverview> {
   @override
   void initState() {
     _loadGlyoseData();
-    _timer = Timer.periodic(Duration(seconds: 180), (timer) {
+    _timer = Timer.periodic(Duration(minutes: 10), (timer) {
       _loadGlyoseData();
     });
     super.initState();
