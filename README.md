@@ -22,7 +22,7 @@ zhang-weijie =
 
 s0582382 =
 
-Jonalismus = 
+Jonalismus = Jonas Wonneberger 0582006
 
 
 
