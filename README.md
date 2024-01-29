@@ -34,7 +34,7 @@ Companio bietet eine integrierte Funktion zur Erinnerung an die Einnahme von Med
 
 ## Entwickler:innen
 
-Kateteryna = 
+Kateteryna = Kateryna Tishchenko 0582015
 
 helmotw =
 
