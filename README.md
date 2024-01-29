@@ -36,7 +36,7 @@ Companio bietet eine integrierte Funktion zur Erinnerung an die Einnahme von Med
 
 Kateteryna = Kateryna Tishchenko 0582015
 
-helmotw =
+helmotw = Christopher Kohardjo 0582080
 
 zhang-weijie = Weijie Zhang 0582504
 
