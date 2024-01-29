@@ -7,7 +7,7 @@ Companio ist eine Diabetes-Management-App, die darauf abzielt, das tägliche Leb
 
 Hauptfunktionen
 
-Blutzuckermessung und -aufzeichnung
+##Blutzuckermessung und -aufzeichnung
 Mit Companio können Benutzer ihre Blutzuckerwerte einfach und bequem aufzeichnen. Die App erleichtert die Überwachung und Aufrechterhaltung eines stabilen Blutzuckerspiegels.
 
 Insulinrechner
