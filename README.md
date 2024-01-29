@@ -38,7 +38,7 @@ Kateteryna =
 
 helmotw =
 
-zhang-weijie =
+zhang-weijie = Weijie Zhang 0582504
 
 s0582382 = Annalena Stamp 0582382
 
