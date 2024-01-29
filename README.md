@@ -40,7 +40,7 @@ helmotw =
 
 zhang-weijie =
 
-s0582382 =
+s0582382 = Annalena Stamp 0582382
 
 Jonalismus = Jonas Wonneberger 0582006
 
