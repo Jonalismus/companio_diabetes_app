@@ -6,7 +6,7 @@ Willkommen zu Companio
 
 Companio ist eine Diabetes-Management-App für iOS und Android Geräte, die darauf abzielt, das tägliche Leben von Menschen mit Diabetes zu erleichtern. Die App bietet eine Vielzahl von Funktionen, um Benutzern dabei zu helfen, ihre Blutzuckerwerte zu überwachen, Insulindosen zu berechnen und ihre allgemeine Gesundheit im Blick zu behalten.
 
-# Hauptfunktionen
+# Hauptfunktionen der App
 
 **Blutzuckermessung und -aufzeichnung**
 
